@@ -4,47 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cartera Financiera - Mauro</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilos personalizados para efectos Neón y Scroll */
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #0b0f19; }
+        ::-webkit-scrollbar-track { background: #070a13; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
-        .glow-card { background: linear-gradient(135deg, rgba(30, 27, 75, 0.4) 0%, rgba(15, 23, 42, 0.9) 100%); }
+        .glow-card { background: linear-gradient(135deg, rgba(30, 27, 75, 0.5) 0%, rgba(15, 23, 42, 0.95) 100%); }
         .glow-orange { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+        .bg-pattern {
+            background-image: radial-gradient(rgba(249, 115, 22, 0.08) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex justify-center items-center p-2">
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex justify-center items-center p-2 bg-pattern">
 
-    <!-- Contenedor Estilo Celular (Mobile-First Premium) -->
-    <div class="w-full max-w-md bg-[#090d16] rounded-[36px] shadow-2xl border border-slate-800/80 overflow-hidden flex flex-col h-[94vh] relative">
+    <!-- Contenedor Principal Estilo Celular Pro -->
+    <div class="w-full max-w-md bg-[#070a13] rounded-[38px] shadow-2xl border border-slate-800/90 overflow-hidden flex flex-col h-[95vh] relative">
         
-        <!-- Header Dinámico Estilo Neobanco -->
-        <div class="px-6 pt-6 pb-5 bg-gradient-to-b from-indigo-950/80 via-[#090d16] to-[#090d16] border-b border-slate-800/50">
+        <!-- Header Dinámico -->
+        <div class="px-6 pt-6 pb-4 bg-gradient-to-b from-indigo-950/70 via-[#070a13] to-[#070a13] border-b border-slate-800/40">
             <div class="flex justify-between items-center mb-3">
                 <div>
-                    <span id="saludo-text" class="text-[11px] uppercase tracking-widest text-orange-400 font-bold">Cargando...</span>
-                    <h2 class="text-xs text-slate-400">Panel Financiero</h2>
+                    <span id="saludo-text" class="text-[11px] uppercase tracking-widest text-orange-400 font-extrabold">⚡ Sincronizado</span>
+                    <h2 class="text-xs text-slate-400">Panel Financiero Pro</h2>
                 </div>
-                <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-orange-500 to-purple-600 flex items-center justify-center font-bold text-sm shadow-lg shadow-orange-500/20">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-orange-500 to-purple-600 flex items-center justify-center font-bold text-sm shadow-lg shadow-orange-500/30 text-white">
                     M
                 </div>
             </div>
             
             <!-- Tarjeta de Saldo Principal -->
-            <div class="mt-2 p-5 rounded-2xl glow-orange text-white shadow-xl shadow-orange-600/10 relative overflow-hidden">
-                <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
-                <p class="text-[11px] uppercase tracking-wider text-orange-100 font-medium opacity-90">Saldo Real Disponible</p>
+            <div class="mt-2 p-5 rounded-2xl glow-orange text-white shadow-xl shadow-orange-600/15 relative overflow-hidden">
+                <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/15 rounded-full blur-xl"></div>
+                <p class="text-[11px] uppercase tracking-wider text-orange-100 font-semibold opacity-90">💰 Saldo Real Disponible</p>
                 <h1 id="saldo-real" class="text-3xl font-black mt-1 tracking-tight">$ 0</h1>
-                <div class="mt-3 flex justify-between items-center text-xs text-orange-100/90 border-t border-white/15 pt-2">
-                    <span>Libre de deudas y bolsillos</span>
-                    <span class="bg-black/20 px-2 py-0.5 rounded-full text-[10px] font-bold">COP 🇨🇴</span>
+                <div class="mt-3 flex justify-between items-center text-xs text-orange-100/90 border-t border-white/20 pt-2">
+                    <span>Cálculo automático activo</span>
+                    <span class="bg-black/25 px-2.5 py-0.5 rounded-full text-[10px] font-bold">COP 🇨🇴</span>
                 </div>
             </div>
         </div>
 
-        <!-- VISTAS DE LA APLICACIÓN (Se alternan según la barra inferior) -->
+        <!-- VISTAS DE LA APLICACIÓN -->
         <div class="flex-1 overflow-y-auto p-5 space-y-5">
 
             <!-- VISTA 1: DASHBOARD -->
@@ -53,14 +55,12 @@
                 <div class="glow-card p-4 rounded-2xl border border-slate-800/80 shadow-lg">
                     <div class="flex justify-between items-center mb-3">
                         <div class="flex items-center space-x-2">
-                            <span class="w-2 h-2 rounded-full bg-orange-500"></span>
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">Mis Bolsillos</h3>
+                            <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">💼 Mis Bolsillos</h3>
                         </div>
-                        <button onclick="agregarBolsillo()" class="text-xs text-orange-400 hover:text-orange-300 font-bold bg-orange-500/10 px-2.5 py-1 rounded-xl transition">+ Añadir</button>
+                        <button onclick="abrirModalBolsillo()" class="text-xs text-orange-400 hover:text-orange-300 font-bold bg-orange-500/10 px-3 py-1.5 rounded-xl transition border border-orange-500/20">+ Añadir</button>
                     </div>
-                    <div id="lista-bolsillos" class="space-y-2.5">
-                        <!-- JS -->
-                    </div>
+                    <div id="lista-bolsillos" class="space-y-2.5"></div>
                 </div>
 
                 <!-- Deudas y Préstamos -->
@@ -68,98 +68,112 @@
                     <div class="flex justify-between items-center mb-3">
                         <div class="flex items-center space-x-2">
                             <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">Deudas y Compromisos</h3>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">📊 Deudas y Compromisos</h3>
                         </div>
-                        <button onclick="agregarDeuda()" class="text-xs text-rose-400 hover:text-rose-300 font-bold bg-rose-500/10 px-2.5 py-1 rounded-xl transition">+ Añadir</button>
+                        <button onclick="abrirModalDeuda()" class="text-xs text-rose-400 hover:text-rose-300 font-bold bg-rose-500/10 px-3 py-1.5 rounded-xl transition border border-rose-500/20">+ Añadir</button>
                     </div>
-                    <div id="lista-deudas" class="space-y-2.5 text-xs">
-                        <!-- JS -->
-                    </div>
+                    <div id="lista-deudas" class="space-y-2.5 text-xs"></div>
                 </div>
 
-                <!-- Calendario de Rayos X -->
+                <!-- Calendario -->
                 <div class="glow-card p-4 rounded-2xl border border-slate-800/80 shadow-lg">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3">📅 Calendario Financiero</h3>
-                    <div class="grid grid-cols-7 gap-1 text-center text-[11px]" id="calendario-grid">
-                        <!-- JS -->
-                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center text-[11px]" id="calendario-grid"></div>
                     <div id="info-dia" class="mt-3 p-3 bg-slate-950/80 rounded-xl text-xs text-slate-400 border border-slate-800/80">
-                        Selecciona un día para ver su radiografía financiera.
+                        Toca un día para consultar previsiones.
                     </div>
                 </div>
             </div>
 
-            <!-- VISTA 2: CHAT CON BOT ANALISTA (Independiente) -->
+            <!-- VISTA 2: CHAT CON BOT ANALISTA -->
             <div id="vista-chat" class="hidden h-full flex flex-col justify-between space-y-3">
                 <div class="flex items-center space-x-2 bg-purple-950/40 p-3 rounded-2xl border border-purple-500/30">
                     <span class="text-xl">🤖</span>
                     <div>
-                        <h3 class="text-xs font-bold text-purple-300">Auditor IA & Simulador</h3>
-                        <p class="text-[10px] text-purple-400/80">Pregúntame sobre inversiones o gastos futuros</p>
+                        <h3 class="text-xs font-bold text-purple-300">Auditor IA Dinámico</h3>
+                        <p class="text-[10px] text-purple-400/80">Analiza tus datos reales de bolsillos y deudas</p>
                     </div>
                 </div>
 
-                <!-- Caja de Chat Expandida -->
-                <div id="chat-box" class="flex-1 bg-slate-950/90 p-4 rounded-2xl text-xs text-slate-300 overflow-y-auto space-y-3 border border-slate-800/80 min-h-[280px] max-h-[340px]">
+                <div id="chat-box" class="flex-1 bg-slate-950/90 p-4 rounded-2xl text-xs text-slate-300 overflow-y-auto space-y-3 border border-slate-800/80 max-h-[320px]">
                     <div class="bg-purple-950/30 border border-purple-500/20 p-3 rounded-2xl text-purple-200">
                         <p class="font-bold text-purple-300 mb-1">🤖 Bot Auditor:</p>
-                        Hola Mauro. Estoy analizando tu flujo de caja en tiempo real. ¿Qué simulación deseas hacer hoy o qué duda tienes sobre tus bolsillos?
+                        Hola Mauro. Ya estoy conectado a tus registros actuales. Pregúntame si puedes hacer un gasto o cómo va tu liquidez.
                     </div>
                 </div>
 
-                <!-- Sugerencias Rápidas -->
                 <div class="flex gap-1.5 overflow-x-auto pb-1 text-[11px]">
-                    <button onclick="preguntarRapido('¿Puedo gastar 50 mil hoy?')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-xl whitespace-nowrap">💵 ¿Puedo gastar 50k?</button>
-                    <button onclick="preguntarRapido('Simular inversión de 200 mil')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-xl whitespace-nowrap">📈 Simular Inversión</button>
+                    <button onclick="preguntarRapido('¿Puedo hacer un gasto fuerte hoy?')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-xl whitespace-nowrap">💵 ¿Puedo gastar?</button>
+                    <button onclick="preguntarRapido('Haz un resumen de mis deudas')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-xl whitespace-nowrap">📋 Resumen de deudas</button>
                 </div>
 
-                <!-- Input Chat -->
                 <div class="flex gap-2 pt-1">
-                    <input type="text" id="chat-input" placeholder="Escribe tu consulta financiera..." class="w-full bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-purple-500">
+                    <input type="text" id="chat-input" placeholder="Pregúntale al bot..." class="w-full bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-purple-500">
                     <button onclick="enviarAlBot()" class="bg-purple-600 hover:bg-purple-500 text-white px-5 py-3 rounded-2xl text-xs font-bold shadow-lg shadow-purple-600/30 transition">Enviar</button>
                 </div>
             </div>
 
-            <!-- VISTA 3: ANALÍTICA -->
+            <!-- VISTA 3: ANALÍTICA REAL -->
             <div id="vista-analitica" class="hidden space-y-4">
                 <div class="glow-card p-5 rounded-2xl border border-slate-800/80 text-center space-y-3">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">📊 Rendimiento Mensual</h3>
-                    <div class="py-6 flex justify-center items-center">
-                        <div class="w-32 h-32 rounded-full border-4 border-orange-500 border-t-purple-600 border-r-indigo-500 flex flex-col justify-center items-center shadow-inner">
-                            <span class="text-lg font-black text-white">78%</span>
-                            <span class="text-[10px] text-slate-400">Salud Financiera</span>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">📊 Salud Financiera Real</h3>
+                    <div class="py-4 flex justify-center items-center">
+                        <div id="circulo-salud" class="w-32 h-32 rounded-full border-4 border-orange-500 border-t-purple-600 border-r-indigo-500 flex flex-col justify-center items-center shadow-inner">
+                            <span id="porcentaje-salud" class="text-lg font-black text-white">100%</span>
+                            <span class="text-[10px] text-slate-400">Estabilidad</span>
                         </div>
                     </div>
-                    <p class="text-xs text-slate-400">Tus bolsillos están estables. Los compromisos futuros están cubiertos en un 85%.</p>
+                    <p id="texto-analitica" class="text-xs text-slate-400">Tus datos están sincronizados en tiempo real.</p>
                 </div>
             </div>
 
             <!-- VISTA 4: AJUSTES -->
             <div id="vista-ajustes" class="hidden space-y-3">
                 <div class="glow-card p-4 rounded-2xl border border-slate-800/80 space-y-3">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">⚙️ Configuración General</h3>
-                    <div class="space-y-2 text-xs">
-                        <div class="flex justify-between items-center p-2.5 bg-slate-900/60 rounded-xl border border-slate-800">
-                            <span>Moneda Principal</span>
-                            <span class="font-bold text-orange-400">Peso Colombiano ($)</span>
-                        </div>
-                        <div class="flex justify-between items-center p-2.5 bg-slate-900/60 rounded-xl border border-slate-800">
-                            <span>Modo Auditor IA</span>
-                            <span class="text-emerald-400 font-bold">Activo Pro</span>
-                        </div>
-                    </div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">⚙️ Opciones del Sistema</h3>
+                    <button onclick="limpiarTodo()" class="w-full bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 py-2.5 rounded-xl text-xs font-bold transition">🗑️ Borrar Datos y Reiniciar</button>
                 </div>
             </div>
 
         </div>
 
-        <!-- Barra de Navegación Inferior (Estilo Neobanco Flotante) -->
-        <div class="bg-[#0b0f19] border-t border-slate-800/80 px-4 py-3 flex justify-around text-[11px] text-slate-400">
+        <!-- MODAL INTERACTIVO PARA AÑADIR BOLSILLOS (Reemplaza los aburridos prompts) -->
+        <div id="modal-bolsillo" class="hidden absolute inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-[#0f172a] border border-slate-700 p-5 rounded-2xl w-full max-w-xs space-y-4 shadow-2xl">
+                <h3 class="text-sm font-bold text-orange-400">💼 Nuevo Bolsillo</h3>
+                <input type="text" id="input-nombre-bolsillo" placeholder="Ej: Arriendo, Ahorro..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500">
+                <input type="number" id="input-monto-bolsillo" placeholder="Monto en pesos (Ej: 150000)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500">
+                <div class="flex gap-2 pt-2">
+                    <button onclick="cerrarModalBolsillo()" class="w-1/2 bg-slate-800 text-slate-300 py-2 rounded-xl text-xs font-bold">Cancelar</button>
+                    <button onclick="guardarBolsillo()" class="w-1/2 bg-orange-600 hover:bg-orange-500 text-white py-2 rounded-xl text-xs font-bold">Guardar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL INTERACTIVO PARA DEUDAS -->
+        <div id="modal-deuda" class="hidden absolute inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-[#0f172a] border border-slate-700 p-5 rounded-2xl w-full max-w-xs space-y-4 shadow-2xl">
+                <h3 class="text-sm font-bold text-rose-400">📊 Nueva Deuda / Compromiso</h3>
+                <input type="text" id="input-nombre-deuda" placeholder="Ej: Banco, Amigo..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                <select id="input-tipo-deuda" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                    <option value="debo">Lo debo (Salida)</option>
+                    <option value="cobro">Me deben (Entrada)</option>
+                </select>
+                <input type="number" id="input-monto-deuda" placeholder="Monto en pesos" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                <div class="flex gap-2 pt-2">
+                    <button onclick="cerrarModalDeuda()" class="w-1/2 bg-slate-800 text-slate-300 py-2 rounded-xl text-xs font-bold">Cancelar</button>
+                    <button onclick="guardarDeuda()" class="w-1/2 bg-rose-600 hover:bg-rose-500 text-white py-2 rounded-xl text-xs font-bold">Guardar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barra de Navegación Inferior -->
+        <div class="bg-[#070a13] border-t border-slate-800/90 px-4 py-3 flex justify-around text-[11px] text-slate-400">
             <button onclick="cambiarVista('dashboard', this)" id="nav-dashboard" class="text-orange-400 font-bold flex flex-col items-center space-y-1 transition">
                 <span class="text-base">📊</span><span>Dashboard</span>
             </button>
             <button onclick="cambiarVista('chat', this)" id="nav-chat" class="hover:text-slate-200 flex flex-col items-center space-y-1 transition">
-                <span class="text-base">🤖</span><span>Bot Analista</span>
+                <span class="text-base">🤖</span><span>Bot IA</span>
             </button>
             <button onclick="cambiarVista('analitica', this)" id="nav-analitica" class="hover:text-slate-200 flex flex-col items-center space-y-1 transition">
                 <span class="text-base">📈</span><span>Analítica</span>
@@ -171,54 +185,67 @@
 
     </div>
 
-    <!-- Script de Lógica -->
+    <!-- Script de Lógica con Sincronización LocalStorage -->
     <script>
-        let bolsillos = [];
-        let deudas = [];
+        let bolsillos = JSON.parse(localStorage.getItem('mauro_bolsillos')) || [];
+        let deudas = JSON.parse(localStorage.getItem('mauro_deudas')) || [];
+
+        function guardarEnMemoria() {
+            localStorage.setItem('mauro_bolsillos', JSON.stringify(bolsillos));
+            localStorage.setItem('mauro_deudas', JSON.stringify(deudas));
+            calcularSaldoReal();
+        }
 
         function formatearPesos(valor) {
             return "$ " + Number(valor).toLocaleString('es-CO');
         }
 
-        function actualizarSaludo() {
-            const hora = new Date().getHours();
-            let saludo = "Buenas Noches, Mauro 🌙";
-            if (hora >= 6 && hora < 12) {
-                saludo = "Buenos Días, Mauro ☀️";
-            } else if (hora >= 12 && hora < 18) {
-                saludo = "Buenas Tardes, Mauro 🌇";
-            }
-            document.getElementById("saludo-text").innerText = saludo;
-        }
-
         function calcularSaldoReal() {
             let totalBolsillos = bolsillos.reduce((acc, b) => acc + Number(b.monto), 0);
-            let totalDeudasPorPagar = deudas.filter(d => d.tipo === 'debo').reduce((acc, d) => acc + Number(d.monto), 0);
-            let saldoReal = totalBolsillos - totalDeudasPorPagar;
+            let totalDeudasDebo = deudas.filter(d => d.tipo === 'debo').reduce((acc, d) => acc + Number(d.monto), 0);
+            let saldoReal = totalBolsillos - totalDeudasDebo;
+            
             document.getElementById("saldo-real").innerText = formatearPesos(saldoReal);
+            actualizarAnalitica(totalBolsillos, totalDeudasDebo);
         }
 
         function cambiarVista(vista, btn) {
-            // Ocultar todas las vistas
             document.getElementById("vista-dashboard").classList.add("hidden");
             document.getElementById("vista-chat").classList.add("hidden");
             document.getElementById("vista-analitica").classList.add("hidden");
             document.getElementById("vista-ajustes").classList.add("hidden");
 
-            // Mostrar la seleccionada
             document.getElementById("vista-" + vista).classList.remove("hidden");
 
-            // Limpiar clases de botones de navegación
-            document.querySelectorAll('nav button, .bg-\\[\\#0b0f19\\] button').forEach(b => {
+            document.querySelectorAll('.bg-\\[\\#070a13\\] button').forEach(b => {
                 b.classList.remove("text-orange-400", "font-bold");
                 b.classList.add("text-slate-400");
             });
 
-            // Activar botón actual si se pasó por parámetro
             if(btn) {
                 btn.classList.remove("text-slate-400");
                 btn.classList.add("text-orange-400", "font-bold");
             }
+        }
+
+        // Modales de Bolsillos
+        function abrirModalBolsillo() {
+            document.getElementById("modal-bolsillo").classList.remove("hidden");
+        }
+        function cerrarModalBolsillo() {
+            document.getElementById("modal-bolsillo").classList.add("hidden");
+            document.getElementById("input-nombre-bolsillo").value = "";
+            document.getElementById("input-monto-bolsillo").value = "";
+        }
+        function guardarBolsillo() {
+            let nombre = document.getElementById("input-nombre-bolsillo").value.trim();
+            let monto = document.getElementById("input-monto-bolsillo").value;
+            if(!nombre || monto === "") return alert("Completa los campos");
+
+            bolsillos.push({ nombre, monto: Number(monto) });
+            guardarEnMemoria();
+            renderBolsillos();
+            cerrarModalBolsillo();
         }
 
         function renderBolsillos() {
@@ -226,7 +253,7 @@
             contenedor.innerHTML = "";
             
             if (bolsillos.length === 0) {
-                contenedor.innerHTML = `<p class="text-xs text-slate-500 italic text-center py-2">Bolsillos limpios. Pulsa "+ Añadir".</p>`;
+                contenedor.innerHTML = `<p class="text-xs text-slate-500 italic text-center py-2">Bolsillos limpios.</p>`;
                 return;
             }
 
@@ -237,36 +264,36 @@
                             <p class="font-bold text-slate-200">${b.nombre}</p>
                             <p class="text-orange-400 font-extrabold mt-0.5">${formatearPesos(b.monto)}</p>
                         </div>
-                        <div class="space-x-3 text-[11px]">
-                            <button onclick="editarBolsillo(${index})" class="text-indigo-400 hover:underline font-semibold">Editar</button>
-                            <button onclick="eliminarBolsillo(${index})" class="text-rose-400 hover:underline font-semibold">Borrar</button>
-                        </div>
+                        <button onclick="eliminarBolsillo(${index})" class="text-rose-400 hover:text-rose-300 font-semibold bg-rose-500/10 px-2 py-1 rounded-lg">Borrar</button>
                     </div>`;
             });
-            calcularSaldoReal();
-        }
-
-        function agregarBolsillo() {
-            let nombre = prompt("Nombre del bolsillo (ej: Arriendo, Ahorro):");
-            if (!nombre) return;
-            let monto = prompt("Monto inicial en pesos (ej: 150000):", "0");
-            if (isNaN(monto) || monto === null) return;
-            
-            bolsillos.push({ nombre, monto: Number(monto) });
-            renderBolsillos();
-        }
-
-        function editarBolsillo(index) {
-            let nuevoMonto = prompt("Nuevo monto para " + bolsillos[index].nombre + ":", bolsillos[index].monto);
-            if (nuevoMonto !== null && !isNaN(nuevoMonto)) {
-                bolsillos[index].monto = Number(nuevoMonto);
-                renderBolsillos();
-            }
         }
 
         function eliminarBolsillo(index) {
             bolsillos.splice(index, 1);
+            guardarEnMemoria();
             renderBolsillos();
+        }
+
+        // Modales de Deudas
+        function abrirModalDeuda() {
+            document.getElementById("modal-deuda").classList.remove("hidden");
+        }
+        function cerrarModalDeuda() {
+            document.getElementById("modal-deuda").classList.add("hidden");
+            document.getElementById("input-nombre-deuda").value = "";
+            document.getElementById("input-monto-deuda").value = "";
+        }
+        function guardarDeuda() {
+            let nombre = document.getElementById("input-nombre-deuda").value.trim();
+            let tipo = document.getElementById("input-tipo-deuda").value;
+            let monto = document.getElementById("input-monto-deuda").value;
+            if(!nombre || monto === "") return alert("Completa los campos");
+
+            deudas.push({ nombre, tipo, monto: Number(monto) });
+            guardarEnMemoria();
+            renderDeudas();
+            cerrarModalDeuda();
         }
 
         function renderDeudas() {
@@ -274,7 +301,7 @@
             contenedor.innerHTML = "";
 
             if (deudas.length === 0) {
-                contenedor.innerHTML = `<p class="text-xs text-slate-500 italic text-center py-2">Sin deudas registradas.</p>`;
+                contenedor.innerHTML = `<p class="text-xs text-slate-500 italic text-center py-2">Sin compromisos registrados.</p>`;
                 return;
             }
 
@@ -285,46 +312,27 @@
                     <div class="flex justify-between items-center bg-slate-900/80 p-3 rounded-xl border border-slate-800">
                         <div>
                             <p class="font-bold ${color}">${d.nombre} (${d.tipo === 'debo' ? 'Debo' : 'Me deben'})</p>
-                            <p class="text-[11px] text-slate-400">Vence: ${d.fecha}</p>
                         </div>
                         <div class="text-right">
                             <span class="font-extrabold ${color}">${signo} ${formatearPesos(d.monto)}</span>
-                            <br><button onclick="eliminarDeuda(${index})" class="text-[10px] text-rose-500 hover:underline mt-1">Eliminar</button>
+                            <br><button onclick="eliminarDeuda(${index})" class="text-[10px] text-rose-500 hover:underline mt-1">Borrar</button>
                         </div>
                     </div>`;
             });
-            calcularSaldoReal();
-        }
-
-        function agregarDeuda() {
-            let nombre = prompt("Acreedor o deudor (ej: Banco / Amigo):");
-            if (!nombre) return;
-            let tipo = prompt("Escribe 'debo' si lo debes, o 'cobro' si te deben:");
-            if (tipo !== 'debo' && tipo !== 'cobro') {
-                alert("Escribe exactamente 'debo' o 'cobro'.");
-                return;
-            }
-            let monto = prompt("Monto en pesos:", "0");
-            if (isNaN(monto) || monto === null) return;
-            let fecha = prompt("Fecha límite:", "Próximos días");
-
-            deudas.push({ nombre, tipo, monto: Number(monto), fecha });
-            renderDeudas();
         }
 
         function eliminarDeuda(index) {
             deudas.splice(index, 1);
+            guardarEnMemoria();
             renderDeudas();
         }
 
         function generarCalendario() {
             const grid = document.getElementById("calendario-grid");
             grid.innerHTML = "";
-            const diasSemana = ['L', 'M', 'Mi', 'J', 'V', 'S', 'D'];
-            diasSemana.forEach(d => {
+            ['L', 'M', 'Mi', 'J', 'V', 'S', 'D'].forEach(d => {
                 grid.innerHTML += `<span class="font-bold text-slate-500 text-[10px]">${d}</span>`;
             });
-
             for (let i = 1; i <= 30; i++) {
                 let esHoy = i === 22 ? 'bg-orange-500 text-white font-black shadow-md shadow-orange-500/30' : 'bg-slate-900/80 text-slate-300 hover:bg-slate-800';
                 grid.innerHTML += `<div onclick="verDetalleDia(${i})" class="p-2 rounded-xl cursor-pointer text-center text-xs transition ${esHoy}">${i}</div>`;
@@ -332,8 +340,13 @@
         }
 
         function verDetalleDia(dia) {
-            const info = document.getElementById("info-dia");
-            info.innerHTML = `<strong>Día ${dia} de Julio:</strong> Radiografía estable. No hay salidas críticas programadas para esta fecha.`;
+            document.getElementById("info-dia").innerHTML = `<strong>Día ${dia}:</strong> Sin alertas críticas programadas.`;
+        }
+
+        function actualizarAnalitica(bTotal, dTotal) {
+            let porcentaje = bTotal > 0 ? Math.max(0, Math.min(100, Math.round(((bTotal - dTotal) / bTotal) * 100))) : 100;
+            document.getElementById("porcentaje-salud").innerText = porcentaje + "%";
+            document.getElementById("texto-analitica").innerText = `Tienes ${bolsillos.length} bolsillos activos y ${deudas.length} compromisos registrados.`;
         }
 
         function preguntarRapido(texto) {
@@ -353,18 +366,19 @@
                     <p class="text-slate-200">${texto}</p>
                 </div>`;
             
-            let respuesta = "Analizando tu flujo de caja... Como auditor te sugiero mantener la prudencia antes de mover este capital.";
+            let totalBolsillos = bolsillos.reduce((acc, b) => acc + Number(b.monto), 0);
+            let totalDeudas = deudas.filter(d => d.tipo === 'debo').reduce((acc, d) => acc + Number(d.monto), 0);
+            let respuesta = `Analizando tu estado actual... Tienes un total de bolsillos por ${formatearPesos(totalBolsillos)} y deudas por ${formatearPesos(totalDeudas)}. Evalúa bien antes de mover capital.`;
+
             let textoLC = texto.toLowerCase();
-            
             if (textoLC.includes("gastar") || textoLC.includes("comprar")) {
-                let totalBolsillos = bolsillos.reduce((acc, b) => acc + Number(b.monto), 0);
-                if (totalBolsillos < 50000) {
-                    respuesta = "⚠️ Alerta de Auditoría: Tus bolsillos están bajos. Si haces este gasto te quedarás sin margen de maniobra para los compromisos críticos.";
+                if (totalBolsillos - totalDeudas <= 50000) {
+                    respuesta = `⚠️ Alerta de Auditoría: Tu margen libre actual es bajo (${formatearPesos(totalBolsillos - totalDeudas)}). No te recomiendo hacer gastos fuertes en este momento.`;
                 } else {
-                    respuesta = "📊 Análisis de escenario: Tienes liquidez disponible en tus bolsillos, pero asegúrate de descontar las deudas próximas antes de confirmar la compra.";
+                    respuesta = `✅ Tienes suficiente liquidez libre (${formatearPesos(totalBolsillos - totalDeudas)}). El gasto proyectado es viable siempre y cuando cubras tus deudas próximas.`;
                 }
-            } else if (textoLC.includes("inversión") || textoLC.includes("invertir")) {
-                respuesta = "📈 Análisis de Inversión: Excelente iniciativa. Te recomiendo destinar solo un porcentaje que no afecte el saldo libre de tus bolsillos principales.";
+            } else if (textoLC.includes("resumen") || textoLC.includes("deudas")) {
+                respuesta = `📋 Tienes ${deudas.length} compromisos registrados que suman ${formatearPesos(totalDeudas)}.`;
             }
 
             setTimeout(() => {
@@ -374,16 +388,27 @@
                         <p>${respuesta}</p>
                     </div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
-            }, 600);
+            }, 500);
 
             input.value = "";
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
+        function limpiarTodo() {
+            if(confirm("¿Seguro que deseas borrar todos los registros?")) {
+                localStorage.clear();
+                bolsillos = [];
+                deudas = [];
+                renderBolsillos();
+                renderDeudas();
+                calcularSaldoReal();
+            }
+        }
+
         window.onload = function() {
-            actualizarSaludo();
             renderBolsillos();
             renderDeudas();
+            calcularSaldoReal();
             generarCalendario();
         };
     </script>
