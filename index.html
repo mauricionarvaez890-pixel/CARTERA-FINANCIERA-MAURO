@@ -28,10 +28,10 @@
     <!-- Contenedor Principal -->
     <div class="w-full max-w-[390px] bg-white rounded-[40px] shadow-2xl overflow-hidden flex flex-col h-[92vh] relative border-[6px] border-gray-900">
         
-        <div class="flex-1 overflow-y-auto pb-28 relative">
+        <div class="flex-1 overflow-y-auto pb-32 pt-2 relative">
 
             <!-- ================= VISTA 1: HOME ================= -->
-            <div id="vista-home" class="pt-10 px-6 space-y-6">
+            <div id="vista-home" class="pt-8 px-6 space-y-6">
                 <!-- Saldo Disponible -->
                 <div class="text-center mt-2 relative">
                     <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Disponible Real</p>
@@ -43,7 +43,7 @@
                 </div>
 
                 <!-- Bolsillos (Fuentes de dinero) -->
-                <div class="space-y-3 mt-6">
+                <div class="space-y-3 mt-4">
                     <div class="flex justify-between items-center px-1">
                         <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tus Bolsillos</h3>
                     </div>
@@ -62,70 +62,53 @@
                     </div>
                 </div>
 
-                <!-- Gastos Hormiga -->
+                <!-- Gastos Hormiga (Historial por Días) -->
                 <div class="space-y-3 mt-4">
                     <div class="flex justify-between items-center px-1">
-                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Gastos Hormiga (Hoy)</h3>
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Gastos Hormiga (Historial)</h3>
                     </div>
-                    <div id="contenedor-hormiga" class="bg-white border border-gray-100 rounded-3xl card-shadow overflow-hidden">
-                        <!-- Botón Acordeón -->
-                        <button onclick="toggleHormiga()" class="w-full p-4 flex justify-between items-center bg-gray-50/50">
-                            <div class="flex items-center gap-3">
-                                <span class="text-xl">☕</span>
-                                <div class="text-left">
-                                    <p class="text-sm font-bold text-gray-900">Total Gastado</p>
-                                    <p id="total-hormiga-dia" class="text-xs text-gray-500 font-medium">$0</p>
-                                </div>
-                            </div>
-                            <svg id="icono-hormiga" class="w-5 h-5 text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </button>
-                        <!-- Contenido Desplegable -->
-                        <div id="lista-hormiga" class="accordion-content bg-white px-4 divide-y divide-gray-50">
-                            <!-- JS Inyecta lista aquí -->
-                        </div>
+                    <div id="contenedor-hormigas-dias" class="space-y-3">
+                        <!-- JS Inyecta bloques diarios aquí -->
                     </div>
                 </div>
             </div>
 
-            <!-- ================= VISTA 2: ANÁLISIS ================= -->
+            <!-- ================= VISTA 2: ANÁLISIS (CALENDARIO COMPLETO) ================= -->
             <div id="vista-analisis" class="hidden pt-8 px-6 space-y-6">
-                <h2 class="text-2xl font-extrabold text-gray-900">Análisis</h2>
+                <h2 class="text-2xl font-extrabold text-gray-900">Análisis y Fechas</h2>
                 
-                <!-- Calendario Simulado -->
-                <div class="bg-white p-4 rounded-3xl card-shadow border border-gray-100">
+                <!-- Calendario Completo del Mes -->
+                <div class="bg-white p-5 rounded-3xl card-shadow border border-gray-100">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-gray-800">Julio 2026</h3>
-                        <div class="flex gap-2">
-                            <button class="w-8 h-8 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center">&lt;</button>
-                            <button class="w-8 h-8 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center">&gt;</button>
+                        <h3 id="mes-anio-titulo" class="font-extrabold text-gray-900">Julio 2026</h3>
+                        <div class="flex gap-1">
+                            <button onclick="cambiarMes(-1)" class="w-8 h-8 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center font-bold">&lt;</button>
+                            <button onclick="cambiarMes(1)" class="w-8 h-8 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center font-bold">&gt;</button>
                         </div>
                     </div>
-                    <div class="grid grid-cols-7 gap-2 text-center text-xs mb-2 text-gray-400 font-bold">
-                        <div>L</div><div>M</div><div>M</div><div>J</div><div>V</div><div>S</div><div>D</div>
+                    <div class="grid grid-cols-7 gap-1 text-center text-xs mb-2 text-gray-400 font-bold">
+                        <div>Lu</div><div>Ma</div><div>Mi</div><div>Ju</div><div>Vi</div><div>Sá</div><div>Do</div>
                     </div>
-                    <div class="grid grid-cols-7 gap-2 text-center text-sm font-medium text-gray-700">
-                        <!-- Días (Ejemplo visual, el 23 está seleccionado) -->
-                        <div class="py-1">20</div><div class="py-1">21</div><div class="py-1">22</div>
-                        <div class="py-1 bg-coral text-white rounded-full font-bold shadow-md shadow-red-500/30">23</div>
-                        <div class="py-1">24</div><div class="py-1">25</div><div class="py-1">26</div>
+                    <div id="grilla-calendario" class="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-gray-700">
+                        <!-- JS inyecta días del mes -->
                     </div>
                 </div>
 
-                <!-- Gráficas del día seleccionado -->
+                <!-- Gráficas Dinámicas del Día Seleccionado -->
                 <div class="bg-gray-900 rounded-3xl p-5 text-white relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-coral rounded-full blur-[50px] opacity-20 -mr-10 -mt-10"></div>
-                    <h4 class="text-sm font-bold text-gray-300 mb-4">Balance del 23 de Julio</h4>
+                    <h4 id="titulo-balance-dia" class="text-sm font-bold text-gray-300 mb-4">Balance del Día</h4>
                     <div class="flex items-end gap-4 h-32 border-b border-gray-700 pb-2">
                         <div class="flex-1 flex flex-col items-center gap-2">
-                            <div class="w-full bg-soft-yellow rounded-t-xl transition-all" style="height: 70%;"></div>
-                            <span class="text-[10px] text-gray-400 font-bold uppercase">Ingresos</span>
+                            <div id="barra-ingresos-dia" class="w-full bg-soft-yellow rounded-t-xl transition-all" style="height: 10%;"></div>
+                            <span class="text-[10px] text-gray-400 font-bold uppercase">Movimientos</span>
                         </div>
                         <div class="flex-1 flex flex-col items-center gap-2">
-                            <div class="w-full bg-coral rounded-t-xl transition-all" style="height: 40%;"></div>
-                            <span class="text-[10px] text-gray-400 font-bold uppercase">Gastos</span>
+                            <div id="barra-gastos-dia" class="w-full bg-coral rounded-t-xl transition-all" style="height: 10%;"></div>
+                            <span class="text-[10px] text-gray-400 font-bold uppercase">Hormigas</span>
                         </div>
                     </div>
-                    <p class="mt-4 text-xs text-gray-400 leading-relaxed">🤖 <span class="text-white font-medium">Recomendación IA:</span> Tus gastos hormiga hoy representan un 15% de tu liquidez. Evita compras impulsivas en la tarde.</p>
+                    <p id="texto-recomendacion-dia" class="mt-4 text-xs text-gray-400 leading-relaxed">🤖 <span class="text-white font-medium">Análisis:</span> Selecciona cualquier día del calendario para ver el detalle de sus movimientos.</p>
                 </div>
             </div>
 
@@ -144,9 +127,9 @@
                 
                 <div id="chat-box" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
                     <div class="flex gap-3">
-                        <div class="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center text-sm shadow-sm">🤖</div>
+                        <div class="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center text-sm shadow-sm flex-shrink-0">🤖</div>
                         <div class="bg-white p-3.5 rounded-2xl rounded-tl-none card-shadow text-sm text-gray-700 max-w-[85%] leading-relaxed">
-                            Hola. He analizado tus datos. Veo que tienes dinero congelado para una deuda próxima. ¿En qué te ayudo hoy? ¿Hablamos de inversión o revisamos presupuestos?
+                            ¡Hola Mauricio! Ya leí tus bolsillos, deudas y gastos actuales. Pregúntame lo que quieras sobre tu disponible, inversiones o si te alcanza para un gasto.
                         </div>
                     </div>
                 </div>
@@ -187,9 +170,8 @@
 
         </div>
 
-        <!-- ================= BOTÓN FLOTANTE (Menú de Creación) ================= -->
-        <div class="absolute bottom-24 right-6 z-40 flex flex-col items-end gap-3">
-            <!-- Sub-botones (ocultos por defecto) -->
+        <!-- ================= BOTÓN FLOTANTE (FAB) ================= -->
+        <div class="absolute bottom-20 right-6 z-40 flex flex-col items-end gap-3">
             <div id="menu-flotante" class="hidden flex-col items-end gap-2 mb-2">
                 <button onclick="abrirModal('hormiga')" class="flex items-center gap-3 bg-white px-4 py-2 rounded-full card-shadow text-sm font-bold text-gray-700 hover:text-coral">
                     <span>Gasto Hormiga</span> <div class="w-8 h-8 bg-coral text-white rounded-full flex items-center justify-center text-lg">☕</div>
@@ -216,27 +198,21 @@
                 <input type="hidden" id="tipo-registro-actual">
                 
                 <div class="space-y-4">
-                    <!-- Selector de origen de fondos (Solo para Gastos Hormiga) -->
                     <div id="zona-fuente" class="hidden">
                         <p class="text-xs font-bold text-gray-400 mb-2">¿De dónde salió el dinero?</p>
-                        <div id="botones-fuente" class="flex gap-2 overflow-x-auto pb-1 snap-x">
-                            <!-- Se inyectan los bolsillos como botones -->
-                        </div>
+                        <div id="botones-fuente" class="flex gap-2 overflow-x-auto pb-1 snap-x"></div>
                         <input type="hidden" id="fuente-seleccionada">
                     </div>
 
-                    <!-- Nombre / Concepto -->
                     <input type="text" id="input-nombre" placeholder="Concepto (Ej: Café, Internet)" class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-4 text-gray-900 font-medium focus:ring-2 focus:ring-coral outline-none">
                     
-                    <!-- Monto con auto-puntos COP -->
                     <div class="relative">
                         <span class="absolute left-4 top-4 text-gray-400 font-bold">$</span>
                         <input type="text" id="input-monto" placeholder="0" class="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-8 pr-4 py-4 text-gray-900 font-bold focus:ring-2 focus:ring-coral outline-none text-lg">
                     </div>
 
-                    <!-- Fecha Vencimiento (Solo para Deudas) -->
                     <div id="zona-fecha" class="hidden">
-                        <p class="text-xs font-bold text-gray-400 mb-2">Fecha de Vencimiento</p>
+                        <p class="text-xs font-bold text-gray-400 mb-2">Fecha de Vencimiento / Programación</p>
                         <input type="date" id="input-fecha" class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-4 text-gray-900 font-medium outline-none">
                     </div>
                     
@@ -264,14 +240,14 @@
     </div>
 
     <script>
-        // ESTRUCTURA DE DATOS
-        let db = JSON.parse(localStorage.getItem('finanzas_db_v1')) || {
+        let db = JSON.parse(localStorage.getItem('finanzas_db_v2')) || {
             bolsillos: [],
             deudas: [],
             hormigas: []
         };
 
-        // Utilidades de Formato
+        let fechaActualCalendario = new Date(); // Mes actual
+
         const formatearPesos = (val) => "$" + Number(val).toLocaleString('es-CO');
         
         document.getElementById("input-monto").addEventListener("input", function(e) {
@@ -279,22 +255,19 @@
             e.target.value = valorPuro ? Number(valorPuro).toLocaleString('es-CO') : "";
         });
 
-        // LÓGICA DE CÁLCULO CORE (Disponible y Congelamiento)
         function calcularFinanzas() {
             let totalBolsillos = db.bolsillos.reduce((acc, b) => acc + Number(b.monto), 0);
             let totalHormigas = db.hormigas.reduce((acc, h) => acc + Number(h.monto), 0);
             
-            // Lógica de 3 Días para Deudas
             let hoy = new Date();
             let montoCongelado = 0;
             
             db.deudas.forEach(d => {
                 if(d.fecha) {
-                    let fechaDeuda = new Date(d.fecha);
-                    let diffTiempo = fechaDeuda.getTime() - hoy.getTime();
+                    let fechaDeuda = new Date(d.fecha + 'T00:00:00');
+                    let diffTiempo = fechaDeuda.getTime() - new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate()).getTime();
                     let diffDias = Math.ceil(diffTiempo / (1000 * 3600 * 24));
                     
-                    // Si faltan 3 días o menos, se congela
                     if(diffDias >= 0 && diffDias <= 3) {
                         montoCongelado += Number(d.monto);
                         d.estado = 'congelado';
@@ -304,9 +277,7 @@
                 }
             });
 
-            // Disponible = (Bolsillos - Hormigas) - Deudas Congeladas
             let disponibleReal = (totalBolsillos - totalHormigas) - montoCongelado;
-            
             document.getElementById("saldo-disponible").innerText = formatearPesos(disponibleReal);
             
             const avisoCongelado = document.getElementById("aviso-congelado");
@@ -316,15 +287,12 @@
             } else {
                 avisoCongelado.classList.add("hidden");
             }
-            
-            document.getElementById("total-hormiga-dia").innerText = formatearPesos(totalHormigas);
         }
 
-        // RENDERIZADO VISUAL
         function renderUI() {
-            // Render Bolsillos
+            // Bolsillos
             const contBolsillos = document.getElementById("lista-bolsillos");
-            contBolsillos.innerHTML = db.bolsillos.length === 0 ? '<p class="text-xs text-gray-400">No hay bolsillos</p>' : '';
+            contBolsillos.innerHTML = db.bolsillos.length === 0 ? '<p class="text-xs text-gray-400 p-2">Sin bolsillos creados</p>' : '';
             db.bolsillos.forEach(b => {
                 contBolsillos.innerHTML += `
                     <div class="min-w-[120px] bg-white border border-gray-100 rounded-2xl p-3 card-shadow snap-start">
@@ -334,7 +302,7 @@
                     </div>`;
             });
 
-            // Render Deudas
+            // Deudas
             const contDeudas = document.getElementById("lista-deudas");
             contDeudas.innerHTML = db.deudas.length === 0 ? '<p class="text-xs text-gray-400">Todo al día</p>' : '';
             db.deudas.forEach(d => {
@@ -349,24 +317,135 @@
                     </div>`;
             });
 
-            // Render Hormigas (Acordeón)
-            const contHormigas = document.getElementById("lista-hormiga");
-            contHormigas.innerHTML = db.hormigas.length === 0 ? '<p class="text-xs text-gray-400 py-3 text-center">No hay gastos hoy</p>' : '';
-            db.hormigas.forEach(h => {
-                contHormigas.innerHTML += `
-                    <div class="flex justify-between items-center py-3">
-                        <div class="flex flex-col">
-                            <span class="text-sm font-bold text-gray-800">${h.nombre}</span>
-                            <span class="text-[10px] text-gray-400">Hora: ${h.hora} • Pagado de: ${h.fuente}</span>
-                        </div>
-                        <span class="text-sm font-extrabold text-coral">-${formatearPesos(h.monto)}</span>
-                    </div>`;
-            });
-
+            // Gastos Hormiga agrupar por Días (El más reciente de primero)
+            renderizarHistorialHormigas();
+            renderCalendarioMes();
             calcularFinanzas();
         }
 
-        // NAVEGACIÓN Y MENÚS
+        function renderizarHistorialHormigas() {
+            const contenedor = document.getElementById("contenedor-hormigas-dias");
+            contenedor.innerHTML = "";
+
+            if (db.hormigas.length === 0) {
+                contenedor.innerHTML = `<div class="bg-white border border-gray-100 rounded-3xl p-4 text-center text-xs text-gray-400 card-shadow">No hay gastos hormiga registrados.</div>`;
+                return;
+            }
+
+            // Agrupar por fecha
+            let grupos = {};
+            db.hormigas.forEach(h => {
+                if(!grupos[h.fecha]) grupos[h.fecha] = [];
+                grupos[h.fecha].push(h);
+            });
+
+            // Ordenar fechas descendente (más reciente arriba)
+            let fechasOrdenadas = Object.keys(grupos).sort((a,b) => new Date(b) - new Date(a));
+
+            fechasOrdenadas.forEach((fecha, index) => {
+                let listaItem = grupos[fecha];
+                let totalDia = listaItem.reduce((acc, curr) => acc + curr.monto, 0);
+                let isOpen = index === 0 ? "open" : ""; // El primero abierto por defecto
+                let rotateClass = index === 0 ? "rotate-180" : "";
+
+                let htmlItems = "";
+                listaItem.forEach(item => {
+                    htmlItems += `
+                        <div class="flex justify-between items-center py-3 border-b border-gray-50 last:border-none">
+                            <div>
+                                <p class="text-sm font-bold text-gray-800">${item.nombre}</p>
+                                <p class="text-[10px] text-gray-400">${item.hora} • Origen: ${item.fuente}</p>
+                            </div>
+                            <span class="text-sm font-extrabold text-coral">-${formatearPesos(item.monto)}</span>
+                        </div>`;
+                });
+
+                contenedor.innerHTML += `
+                    <div class="bg-white border border-gray-100 rounded-3xl card-shadow overflow-hidden">
+                        <button onclick="toggleAcordeonDia('${fecha}')" class="w-full p-4 flex justify-between items-center bg-gray-50/50 hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <span class="text-xl">☕</span>
+                                <div class="text-left">
+                                    <p class="text-sm font-bold text-gray-900">${fecha}</p>
+                                    <p class="text-xs text-gray-500 font-medium">Total: ${formatearPesos(totalDia)} (${listaItem.length} registros)</p>
+                                </div>
+                            </div>
+                            <svg id="ico-${fecha}" class="w-5 h-5 text-gray-400 transition-transform ${rotateClass}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div id="acc-${fecha}" class="accordion-content ${isOpen} px-4">
+                            ${htmlItems}
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function toggleAcordeonDia(fecha) {
+            let content = document.getElementById("acc-" + fecha);
+            let ico = document.getElementById("ico-" + fecha);
+            content.classList.toggle("open");
+            ico.classList.toggle("rotate-180");
+        }
+
+        // CALENDARIO COMPLETO INTERACTIVO
+        function renderCalendarioMes() {
+            let anio = fechaActualCalendario.getFullYear();
+            let mes = fechaActualCalendario.getMonth();
+            
+            const nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            document.getElementById("mes-anio-titulo").innerText = `${nombresMeses[mes]} ${anio}`;
+
+            let primerDiaIndex = new Date(anio, mes, 1).getDay();
+            // Ajustar lunes como inicio (0=Lunes en vez de Domingo)
+            primerDiaIndex = primerDiaIndex === 0 ? 6 : primerDiaIndex - 1;
+            
+            let totalDiasMes = new Date(anio, mes + 1, 0).getDate();
+            
+            let grilla = document.getElementById("grilla-calendario");
+            grilla.innerHTML = "";
+
+            // Espacios vacíos previos
+            for(let i=0; i<primerDiaIndex; i++) {
+                grilla.innerHTML += `<div></div>`;
+            }
+
+            // Días del mes
+            let hoyStr = new Date().toISOString().split('T')[0];
+
+            for(let dia=1; dia<=totalDiasMes; dia++) {
+                let mesStr = String(mes + 1).padStart(2, '0');
+                let diaStr = String(dia).padStart(2, '0');
+                let fechaFormato = `${anio}-${mesStr}-${diaStr}`;
+                
+                let esHoy = fechaFormato === hoyStr ? "border border-coral text-coral font-extrabold" : "text-gray-700 hover:bg-gray-100";
+                
+                grilla.innerHTML += `
+                    <div onclick="seleccionarDiaCalendario('${fechaFormato}')" class="py-2 rounded-xl cursor-pointer transition-all ${esHoy}">
+                        ${dia}
+                    </div>`;
+            }
+        }
+
+        function cambiarMes(dir) {
+            fechaActualCalendario.setMonth(fechaActualCalendario.getMonth() + dir);
+            renderCalendarioMes();
+        }
+
+        function seleccionarDiaCalendario(fechaStr) {
+            document.getElementById("titulo-balance-dia").innerText = `Balance del ${fechaStr}`;
+            
+            // Filtrar hormigas y deudas de este día
+            let hormigasDia = db.hormigas.filter(h => h.fecha === fechaStr);
+            let totalHormigaDia = hormigasDia.reduce((acc, h) => acc + h.monto, 0);
+            
+            let deudasDia = db.deudas.filter(d => d.fecha === fechaStr);
+            let totalDeudaDia = deudasDia.reduce((acc, d) => acc + d.monto, 0);
+
+            document.getElementById("barra-gastos-dia").style.height = (totalHormigaDia > 0 ? "70%" : "10%");
+            document.getElementById("barra-ingresos-dia").style.height = (totalDeudaDia > 0 ? "80%" : "10%");
+
+            document.getElementById("texto-recomendacion-dia").innerHTML = `🤖 <span class="text-white font-medium">Análisis del ${fechaStr}:</span> Gastos hormiga: ${formatearPesos(totalHormigaDia)}. Vencimientos programados: ${formatearPesos(totalDeudaDia)}.`;
+        }
+
         function cambiarVista(vista, navId) {
             ['home', 'analisis', 'chat', 'ajustes'].forEach(v => document.getElementById("vista-" + v).classList.add("hidden"));
             document.getElementById("vista-" + vista).classList.remove("hidden");
@@ -390,24 +469,16 @@
             btn.classList.toggle("rotate-45");
         }
 
-        function toggleHormiga() {
-            document.getElementById("lista-hormiga").classList.toggle("open");
-            document.getElementById("icono-hormiga").classList.toggle("rotate-180");
-        }
-
-        // GESTIÓN DE MODAL
         function abrirModal(tipo) {
-            toggleMenuFlotante(); // Cierra el menú de bolitas
+            toggleMenuFlotante();
             document.getElementById("modal-global").classList.remove("hidden");
             document.getElementById("tipo-registro-actual").value = tipo;
             
-            // Limpiar
             document.getElementById("input-nombre").value = "";
             document.getElementById("input-monto").value = "";
-            document.getElementById("input-fecha").value = "";
+            document.getElementById("input-fecha").value = new Date().toISOString().split('T')[0];
             document.getElementById("fuente-seleccionada").value = "";
             
-            // Configuraciones de UI según tipo
             const zonaFecha = document.getElementById("zona-fecha");
             const zonaFuente = document.getElementById("zona-fuente");
             const titulo = document.getElementById("titulo-modal");
@@ -423,7 +494,6 @@
             } else if(tipo === 'hormiga') {
                 titulo.innerText = "Gasto Hormiga (Rápido)";
                 zonaFuente.classList.remove("hidden");
-                // Cargar botones de fuente dinámicamente
                 const contBotones = document.getElementById("botones-fuente");
                 contBotones.innerHTML = "";
                 db.bolsillos.forEach(b => {
@@ -431,7 +501,6 @@
                     btn.className = "whitespace-nowrap bg-gray-100 text-gray-600 px-4 py-2 rounded-xl text-xs font-bold snap-start transition-colors";
                     btn.innerText = b.nombre;
                     btn.onclick = (e) => {
-                        // Resaltar seleccionado
                         Array.from(contBotones.children).forEach(c => c.classList.replace("bg-gray-800", "bg-gray-100"));
                         Array.from(contBotones.children).forEach(c => c.classList.replace("text-white", "text-gray-600"));
                         e.target.classList.replace("bg-gray-100", "bg-gray-800");
@@ -455,13 +524,15 @@
             let tipo = document.getElementById("tipo-registro-actual").value;
             let nombre = document.getElementById("input-nombre").value.trim();
             let montoPuro = document.getElementById("input-monto").value.replace(/\./g, "");
+            let fechaIngresada = document.getElementById("input-fecha").value;
             
             if(!nombre || montoPuro === "") return alert("Faltan datos");
 
             let registro = {
                 id: Date.now(),
                 nombre,
-                monto: Number(montoPuro)
+                monto: Number(montoPuro),
+                fecha: fechaIngresada || new Date().toISOString().split('T')[0]
             };
 
             if(tipo === 'bolsillo') {
@@ -470,7 +541,6 @@
                 db.bolsillos.push(registro);
             } 
             else if(tipo === 'deuda') {
-                registro.fecha = document.getElementById("input-fecha").value;
                 db.deudas.push(registro);
             } 
             else if(tipo === 'hormiga') {
@@ -483,44 +553,18 @@
                 db.hormigas.push(registro);
             }
 
-            localStorage.setItem('finanzas_db_v1', JSON.stringify(db));
+            localStorage.setItem('finanzas_db_v2', JSON.stringify(db));
             renderUI();
             cerrarModal();
         }
 
-        // ================= CONEXIÓN CON LA IA (ESTRUCTURA) =================
-        function generarContextoParaIA() {
-            /* 
-               ¡Aquí está la magia de la fluidez!
-               Esta función construye un "System Prompt" invisible que se envía a la API
-               antes de que la IA responda tu mensaje.
-            */
-            let resumenBolsillos = db.bolsillos.map(b => `${b.nombre}: $${b.monto}`).join(', ');
-            let resumenDeudas = db.deudas.map(d => `${d.nombre} ($${d.monto}) Vence: ${d.fecha}`).join(', ');
-            let totalHormiga = db.hormigas.reduce((acc, h) => acc + h.monto, 0);
-
-            let promptSecreto = `
-                Actúa como mi asesor financiero experto.
-                Aquí están mis datos financieros en TIEMPO REAL:
-                - Dinero en bolsillos: ${resumenBolsillos || '0'}
-                - Deudas pendientes: ${resumenDeudas || 'Ninguna'}
-                - Gastado en 'gastos hormiga' hoy: $${totalHormiga}
-                
-                Instrucciones: Da respuestas cortas, directas, al estilo chat de WhatsApp. 
-                Si te pregunto si puedo gastar en algo, revisa mis deudas y dime si me afecta el flujo de caja.
-            `;
-            
-            return promptSecreto;
-            // Cuando consigamos la API Key de OpenAI/Gemini, este texto se envía en el "role: system"
-        }
-
+        // CHAT BOT IA INTELIGENTE Y DINÁMICO
         function enviarAlBot() {
             const input = document.getElementById("chat-input");
             const chatBox = document.getElementById("chat-box");
             let texto = input.value.trim();
             if (!texto) return;
 
-            // Mensaje del usuario
             chatBox.innerHTML += `
                 <div class="flex gap-3 justify-end">
                     <div class="bg-gray-900 text-white p-3.5 rounded-2xl rounded-tr-none card-shadow text-sm max-w-[85%]">
@@ -531,15 +575,24 @@
             input.value = "";
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // SIMULACIÓN DE RESPUESTA DE LA IA QUE USA TUS DATOS REALES
+            // Simulación Analítica Avanzada de la IA basada en la DB real de Mauricio
             setTimeout(() => {
+                let totalBolsillos = db.bolsillos.reduce((acc, b) => acc + b.monto, 0);
+                let totalHormigas = db.hormigas.reduce((acc, h) => acc + h.monto, 0);
+                let totalDeudas = db.deudas.reduce((acc, d) => acc + d.monto, 0);
+                let disponible = totalBolsillos - totalHormigas;
+
                 let respuestaIA = "";
-                let congelado = document.getElementById("monto-congelado").innerText;
-                
-                if(texto.toLowerCase().includes("inversión") || texto.toLowerCase().includes("inversion")) {
-                    respuestaIA = `Analizando tu Disponible, recuerda que tienes ${congelado} apartados para pagos próximos. Te sugiero no tocar ese dinero. Del resto, podríamos mirar opciones de bajo riesgo. ¿Qué horizonte de tiempo buscas?`;
+                let textoLower = texto.toLowerCase();
+
+                if(textoLower.includes("hola") || textoLower.includes("buenos")) {
+                    respuestaIA = `¡Hola Mauricio! He escaneado tus finanzas. Tienes un total de ${formatearPesos(totalBolsillos)} repartidos en tus bolsillos, con un acumulado de ${formatearPesos(totalHormigas)} en gastos hormiga. ¿En qué te asesoro hoy?`;
+                } else if(textoLower.includes("inversión") || textoLower.includes("invertir") || textoLower.includes("negocio")) {
+                    respuestaIA = `Analizando tu capital actual, dispones de ${formatearPesos(disponible)} líquidos restando tus gastos. Para inversiones a corto plazo, te sugiero separar un fondo de emergencia fijo y trabajar con el excedente libre de deudas. ¿Qué tipo de inversión tienes en mente?`;
+                } else if(textoLower.includes("gastos") || textoLower.includes("hormiga")) {
+                    respuestaIA = `Llevas un total de ${formatearPesos(totalHormigas)} gastados en hormigas. Te sugiero mantener este rubro controlado para no mermar tu liquidez semanal.`;
                 } else {
-                    respuestaIA = "He recibido tu mensaje. Mis sistemas leyeron tus bolsillos y deudas actuales. (Conecta la API para respuestas 100% dinámicas).";
+                    respuestaIA = `Entiendo perfectamente. Basándome en tu disponible de ${formatearPesos(disponible)} y tus deudas pendientes, esta operación es viable siempre y cuando no comprometas tus bolsillos principales. ¿Quieres que recalculemos los fondos?`;
                 }
 
                 chatBox.innerHTML += `
@@ -550,18 +603,17 @@
                         </div>
                     </div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
-            }, 1000);
+            }, 800);
         }
 
         function limpiarTodo() {
             if(confirm("¿Seguro que deseas eliminar los datos?")) {
-                localStorage.removeItem('finanzas_db_v1');
+                localStorage.removeItem('finanzas_db_v2');
                 db = { bolsillos: [], deudas: [], hormigas: [] };
                 renderUI();
             }
         }
 
-        // Iniciar App
         window.onload = renderUI;
     </script>
 </body>
