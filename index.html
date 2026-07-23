@@ -3,246 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cartera Financiera - Mauro</title>
+    <title>Cartera Financiera - Soft UI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #070a13; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
-        .glow-card { background: linear-gradient(135deg, rgba(30, 27, 75, 0.5) 0%, rgba(15, 23, 42, 0.95) 100%); }
-        .glow-orange { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
-        .bg-pattern {
-            background-image: radial-gradient(rgba(249, 115, 22, 0.08) 1px, transparent 1px);
-            background-size: 24px 24px;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f4f5f7; }
+        ::-webkit-scrollbar { width: 0px; }
+        .soft-shadow { box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05); }
+        .card-shadow { box-shadow: 0 10px 25px -5px rgba(0,0,0,0.03); }
+        .modal-shadow { box-shadow: 0 -15px 40px -10px rgba(0,0,0,0.1); }
+        
+        /* Colores exactos de tu imagen */
+        .bg-coral { background-color: #ff5a5f; }
+        .text-coral { color: #ff5a5f; }
+        .bg-soft-yellow { background-color: #ffdf8d; }
+        .bg-soft-coral { background-color: #ff8c8f; }
+        .bg-soft-purple { background-color: #c8b4ff; }
+        
+        .bar-animate { transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex justify-center items-center p-2 bg-pattern">
+<body class="min-h-screen flex justify-center items-center p-2">
 
-    <!-- Contenedor Principal Estilo Celular Pro -->
-    <div class="w-full max-w-md bg-[#070a13] rounded-[38px] shadow-2xl border border-slate-800/90 overflow-hidden flex flex-col h-[95vh] relative">
+    <!-- Contenedor Principal (Estilo iPhone) -->
+    <div class="w-full max-w-[390px] bg-white rounded-[40px] shadow-2xl overflow-hidden flex flex-col h-[92vh] relative border-[6px] border-gray-900">
         
-        <!-- Header Dinámico -->
-        <div class="px-6 pt-6 pb-4 bg-gradient-to-b from-indigo-950/70 via-[#070a13] to-[#070a13] border-b border-slate-800/40">
-            <div class="flex justify-between items-center mb-3">
-                <div>
-                    <span id="saludo-text" class="text-[11px] uppercase tracking-widest text-orange-400 font-extrabold">⚡ Sincronizado</span>
-                    <h2 class="text-xs text-slate-400">Panel Financiero Pro</h2>
-                </div>
-                <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-orange-500 to-purple-600 flex items-center justify-center font-bold text-sm shadow-lg shadow-orange-500/30 text-white">
-                    M
-                </div>
-            </div>
-            
-            <!-- Tarjeta de Saldo Principal -->
-            <div class="mt-2 p-5 rounded-2xl glow-orange text-white shadow-xl shadow-orange-600/15 relative overflow-hidden">
-                <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/15 rounded-full blur-xl"></div>
-                <p class="text-[11px] uppercase tracking-wider text-orange-100 font-semibold opacity-90">💰 Saldo Real Disponible</p>
-                <h1 id="saldo-real" class="text-3xl font-black mt-1 tracking-tight">$ 0</h1>
-                <div class="mt-3 flex justify-between items-center text-xs text-orange-100/90 border-t border-white/20 pt-2">
-                    <span>Cálculo automático activo</span>
-                    <span class="bg-black/25 px-2.5 py-0.5 rounded-full text-[10px] font-bold">COP 🇨🇴</span>
-                </div>
-            </div>
-        </div>
-
         <!-- VISTAS DE LA APLICACIÓN -->
-        <div class="flex-1 overflow-y-auto p-5 space-y-5">
+        <div class="flex-1 overflow-y-auto pb-24 relative">
 
-            <!-- VISTA 1: DASHBOARD -->
-            <div id="vista-dashboard" class="space-y-5">
-                <!-- Bolsillos -->
-                <div class="glow-card p-4 rounded-2xl border border-slate-800/80 shadow-lg">
-                    <div class="flex justify-between items-center mb-3">
-                        <div class="flex items-center space-x-2">
-                            <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">💼 Mis Bolsillos</h3>
-                        </div>
-                        <button onclick="abrirModalBolsillo()" class="text-xs text-orange-400 hover:text-orange-300 font-bold bg-orange-500/10 px-3 py-1.5 rounded-xl transition border border-orange-500/20">+ Añadir</button>
-                    </div>
-                    <div id="lista-bolsillos" class="space-y-2.5"></div>
+            <!-- ================= VISTA 1: DASHBOARD (HOME) ================= -->
+            <div id="vista-dashboard" class="pt-8 px-6 space-y-6">
+                
+                <!-- Selector de Fecha -->
+                <div class="flex justify-center items-center gap-4 text-gray-800 font-semibold text-sm">
+                    <button class="text-gray-400 hover:text-gray-800">❮</button>
+                    <span class="flex items-center gap-2">📅 <span id="mes-actual">Julio 2026</span></span>
+                    <button class="text-gray-400 hover:text-gray-800">❯</button>
                 </div>
 
-                <!-- Deudas y Préstamos -->
-                <div class="glow-card p-4 rounded-2xl border border-slate-800/80 shadow-lg">
-                    <div class="flex justify-between items-center mb-3">
-                        <div class="flex items-center space-x-2">
-                            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">📊 Deudas y Compromisos</h3>
-                        </div>
-                        <button onclick="abrirModalDeuda()" class="text-xs text-rose-400 hover:text-rose-300 font-bold bg-rose-500/10 px-3 py-1.5 rounded-xl transition border border-rose-500/20">+ Añadir</button>
+                <!-- Saldo Gigante -->
+                <div class="text-center mt-2">
+                    <h1 id="saldo-real" class="text-[42px] font-extrabold tracking-tighter text-gray-900 leading-tight">$0</h1>
+                    
+                    <!-- Píldoras (Tags) -->
+                    <div class="flex justify-center gap-2 mt-3">
+                        <span class="bg-coral text-white px-3 py-1 rounded-full text-[11px] font-semibold tracking-wide">Principal</span>
+                        <span class="bg-gray-100 text-gray-500 px-3 py-1 rounded-full text-[11px] font-semibold tracking-wide border border-gray-200">Ahorro</span>
+                        <button onclick="abrirModalBolsillo()" class="text-gray-400 px-2">+</button>
                     </div>
-                    <div id="lista-deudas" class="space-y-2.5 text-xs"></div>
                 </div>
 
-                <!-- Calendario -->
-                <div class="glow-card p-4 rounded-2xl border border-slate-800/80 shadow-lg">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3">📅 Calendario Financiero</h3>
-                    <div class="grid grid-cols-7 gap-1 text-center text-[11px]" id="calendario-grid"></div>
-                    <div id="info-dia" class="mt-3 p-3 bg-slate-950/80 rounded-xl text-xs text-slate-400 border border-slate-800/80">
-                        Toca un día para consultar previsiones.
+                <!-- Gráficos de Barras (Soft UI) -->
+                <div class="flex justify-center items-end gap-5 h-44 mt-4 mb-2">
+                    <!-- Barra 1 -->
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="w-14 bg-soft-yellow rounded-3xl relative flex items-end justify-center pb-3 bar-animate" style="height: 60%;">
+                            <span class="text-[10px] font-bold text-yellow-800 opacity-70">🍔</span>
+                        </div>
+                        <span class="text-[11px] font-bold text-gray-500">Bolsillos</span>
+                    </div>
+                    <!-- Barra 2 -->
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="w-14 bg-soft-coral rounded-3xl relative flex items-end justify-center pb-3 bar-animate" style="height: 85%;">
+                            <span class="text-[10px] font-bold text-red-800 opacity-70">🛍️</span>
+                        </div>
+                        <span class="text-[11px] font-bold text-gray-500">Ingresos</span>
+                    </div>
+                    <!-- Barra 3 -->
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="w-14 bg-soft-purple rounded-3xl relative flex items-end justify-center pb-3 bar-animate" style="height: 40%;">
+                            <span class="text-[10px] font-bold text-purple-800 opacity-70">💸</span>
+                        </div>
+                        <span class="text-[11px] font-bold text-gray-500">Deudas</span>
+                    </div>
+                </div>
+
+                <!-- Lista de Registros -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center px-1">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tus Bolsillos</h3>
+                        <button onclick="abrirModalBolsillo()" class="text-coral text-xs font-bold">Añadir</button>
+                    </div>
+                    <div id="lista-bolsillos" class="space-y-3">
+                        <!-- JS inyecta aquí -->
                     </div>
                 </div>
             </div>
 
-            <!-- VISTA 2: CHAT CON BOT ANALISTA -->
-            <div id="vista-chat" class="hidden h-full flex flex-col justify-between space-y-3">
-                <div class="flex items-center space-x-2 bg-purple-950/40 p-3 rounded-2xl border border-purple-500/30">
-                    <span class="text-xl">🤖</span>
+            <!-- ================= VISTA 2: CIERRE DE CAJA ================= -->
+            <div id="vista-cierre" class="hidden pt-8 px-6 space-y-6">
+                <div class="text-center">
+                    <span class="text-3xl">📊</span>
+                    <h2 class="text-2xl font-extrabold text-gray-900 mt-2">Cierre de Caja</h2>
+                    <p class="text-sm text-gray-500 mt-1">Cuadre rápido de flujo diario</p>
+                </div>
+
+                <div class="bg-white border border-gray-100 rounded-3xl p-5 card-shadow space-y-4">
                     <div>
-                        <h3 class="text-xs font-bold text-purple-300">Auditor IA Dinámico</h3>
-                        <p class="text-[10px] text-purple-400/80">Analiza tus datos reales de bolsillos y deudas</p>
+                        <label class="text-xs font-bold text-gray-500 uppercase ml-1">Base Inicial en Caja</label>
+                        <input type="number" placeholder="$ 0" class="w-full mt-1 bg-gray-50 border-none rounded-2xl px-4 py-3.5 text-gray-900 font-bold focus:ring-2 focus:ring-coral outline-none text-lg">
                     </div>
-                </div>
-
-                <div id="chat-box" class="flex-1 bg-slate-950/90 p-4 rounded-2xl text-xs text-slate-300 overflow-y-auto space-y-3 border border-slate-800/80 max-h-[320px]">
-                    <div class="bg-purple-950/30 border border-purple-500/20 p-3 rounded-2xl text-purple-200">
-                        <p class="font-bold text-purple-300 mb-1">🤖 Bot Auditor:</p>
-                        Hola Mauro. Ya estoy conectado a tus registros actuales. Pregúntame si puedes hacer un gasto o cómo va tu liquidez.
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 uppercase ml-1">Ingresos por Ventas</label>
+                        <input type="number" placeholder="$ 0" class="w-full mt-1 bg-gray-50 border-none rounded-2xl px-4 py-3.5 text-gray-900 font-bold focus:ring-2 focus:ring-coral outline-none text-lg">
                     </div>
-                </div>
-
-                <div class="flex gap-1.5 overflow-x-auto pb-1 text-[11px]">
-                    <button onclick="preguntarRapido('¿Puedo hacer un gasto fuerte hoy?')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-xl whitespace-nowrap">💵 ¿Puedo gastar?</button>
-                    <button onclick="preguntarRapido('Haz un resumen de mis deudas')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-xl whitespace-nowrap">📋 Resumen de deudas</button>
-                </div>
-
-                <div class="flex gap-2 pt-1">
-                    <input type="text" id="chat-input" placeholder="Pregúntale al bot..." class="w-full bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-purple-500">
-                    <button onclick="enviarAlBot()" class="bg-purple-600 hover:bg-purple-500 text-white px-5 py-3 rounded-2xl text-xs font-bold shadow-lg shadow-purple-600/30 transition">Enviar</button>
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 uppercase ml-1">Transferencias (Nequi/Bancos)</label>
+                        <input type="number" placeholder="$ 0" class="w-full mt-1 bg-gray-50 border-none rounded-2xl px-4 py-3.5 text-gray-900 font-bold focus:ring-2 focus:ring-coral outline-none text-lg">
+                    </div>
+                    <!-- Nota: Eliminada la opción de gastos en efectivo para cuadre directo -->
+                    
+                    <button class="w-full bg-coral text-white font-bold py-4 rounded-2xl shadow-lg shadow-red-500/30 mt-4 active:scale-95 transition-transform">
+                        Confirmar Cierre Diario
+                    </button>
                 </div>
             </div>
 
-            <!-- VISTA 3: ANALÍTICA REAL -->
-            <div id="vista-analitica" class="hidden space-y-4">
-                <div class="glow-card p-5 rounded-2xl border border-slate-800/80 text-center space-y-3">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">📊 Salud Financiera Real</h3>
-                    <div class="py-4 flex justify-center items-center">
-                        <div id="circulo-salud" class="w-32 h-32 rounded-full border-4 border-orange-500 border-t-purple-600 border-r-indigo-500 flex flex-col justify-center items-center shadow-inner">
-                            <span id="porcentaje-salud" class="text-lg font-black text-white">100%</span>
-                            <span class="text-[10px] text-slate-400">Estabilidad</span>
+            <!-- ================= VISTA 3: CHAT IA ================= -->
+            <div id="vista-chat" class="hidden flex flex-col h-full">
+                <div class="pt-8 px-6 pb-4 bg-white z-10 soft-shadow">
+                    <h2 class="text-2xl font-extrabold text-gray-900">Auditor IA</h2>
+                    <p class="text-xs text-gray-500">Asistente financiero en tiempo real</p>
+                </div>
+                
+                <div id="chat-box" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
+                    <!-- Mensaje Bot -->
+                    <div class="flex gap-3">
+                        <div class="w-8 h-8 rounded-full bg-soft-purple flex items-center justify-center text-sm shadow-sm">🤖</div>
+                        <div class="bg-white p-3.5 rounded-2xl rounded-tl-none card-shadow text-sm text-gray-700 max-w-[80%]">
+                            Hola Mauro. Analizando tu flujo de caja con este nuevo diseño. ¿En qué te ayudo hoy?
                         </div>
                     </div>
-                    <p id="texto-analitica" class="text-xs text-slate-400">Tus datos están sincronizados en tiempo real.</p>
+                </div>
+
+                <div class="p-4 bg-white border-t border-gray-100">
+                    <div class="flex gap-2">
+                        <input type="text" id="chat-input" placeholder="Pregúntame algo..." class="w-full bg-gray-100 border-none rounded-full px-5 py-3.5 text-sm text-gray-800 focus:ring-2 focus:ring-coral outline-none">
+                        <button onclick="enviarAlBot()" class="w-12 h-12 bg-coral text-white rounded-full flex items-center justify-center shadow-md shadow-red-500/20 flex-shrink-0 active:scale-95 transition-transform">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- VISTA 4: AJUSTES -->
-            <div id="vista-ajustes" class="hidden space-y-3">
-                <div class="glow-card p-4 rounded-2xl border border-slate-800/80 space-y-3">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">⚙️ Opciones del Sistema</h3>
-                    <button onclick="limpiarTodo()" class="w-full bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 py-2.5 rounded-xl text-xs font-bold transition">🗑️ Borrar Datos y Reiniciar</button>
+            <!-- ================= VISTA 4: AJUSTES ================= -->
+            <div id="vista-ajustes" class="hidden pt-8 px-6 space-y-6">
+                <h2 class="text-2xl font-extrabold text-gray-900">Configuración</h2>
+                <div class="bg-white border border-gray-100 rounded-3xl p-2 card-shadow">
+                    <button onclick="limpiarTodo()" class="w-full text-left px-4 py-4 flex items-center gap-3 text-red-500 font-bold text-sm">
+                        <span class="bg-red-50 p-2 rounded-xl">🗑️</span> Borrar todos los registros
+                    </button>
                 </div>
             </div>
 
         </div>
 
-        <!-- MODAL INTERACTIVO PARA AÑADIR BOLSILLOS (Reemplaza los aburridos prompts) -->
-        <div id="modal-bolsillo" class="hidden absolute inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div class="bg-[#0f172a] border border-slate-700 p-5 rounded-2xl w-full max-w-xs space-y-4 shadow-2xl">
-                <h3 class="text-sm font-bold text-orange-400">💼 Nuevo Bolsillo</h3>
-                <input type="text" id="input-nombre-bolsillo" placeholder="Ej: Arriendo, Ahorro..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500">
-                <input type="number" id="input-monto-bolsillo" placeholder="Monto en pesos (Ej: 150000)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500">
-                <div class="flex gap-2 pt-2">
-                    <button onclick="cerrarModalBolsillo()" class="w-1/2 bg-slate-800 text-slate-300 py-2 rounded-xl text-xs font-bold">Cancelar</button>
-                    <button onclick="guardarBolsillo()" class="w-1/2 bg-orange-600 hover:bg-orange-500 text-white py-2 rounded-xl text-xs font-bold">Guardar</button>
+        <!-- ================= MODAL AÑADIR (Estilo Deslizable) ================= -->
+        <div id="modal-bolsillo" class="hidden fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 flex items-end justify-center">
+            <div class="bg-white w-full max-w-[390px] rounded-t-[32px] p-6 pb-10 modal-shadow transition-transform translate-y-0 relative border-x-[6px] border-gray-900">
+                <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6"></div>
+                <h3 class="text-xl font-extrabold text-gray-900 mb-5">Nuevo Registro</h3>
+                
+                <div class="space-y-4">
+                    <div class="flex gap-3">
+                        <button class="flex-1 bg-coral text-white py-2.5 rounded-xl text-sm font-bold shadow-md shadow-red-500/20">Bolsillo</button>
+                        <button class="flex-1 bg-gray-100 text-gray-500 py-2.5 rounded-xl text-sm font-bold">Deuda</button>
+                    </div>
+                    
+                    <input type="text" id="input-nombre-bolsillo" placeholder="Nombre (Ej: Ahorro, Arriendo)" class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-4 text-gray-900 font-medium focus:ring-2 focus:ring-coral outline-none">
+                    
+                    <div class="relative">
+                        <span class="absolute left-4 top-4 text-gray-400 font-bold">$</span>
+                        <input type="number" id="input-monto-bolsillo" placeholder="0" class="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-8 pr-4 py-4 text-gray-900 font-bold focus:ring-2 focus:ring-coral outline-none text-lg">
+                    </div>
+                    
+                    <div class="flex gap-3 pt-2">
+                        <button onclick="cerrarModalBolsillo()" class="w-1/3 bg-gray-100 text-gray-600 py-4 rounded-2xl text-sm font-bold">Cancelar</button>
+                        <button onclick="guardarBolsillo()" class="w-2/3 bg-gray-900 text-white py-4 rounded-2xl text-sm font-bold shadow-lg shadow-gray-900/20">Guardar</button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- MODAL INTERACTIVO PARA DEUDAS -->
-        <div id="modal-deuda" class="hidden absolute inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div class="bg-[#0f172a] border border-slate-700 p-5 rounded-2xl w-full max-w-xs space-y-4 shadow-2xl">
-                <h3 class="text-sm font-bold text-rose-400">📊 Nueva Deuda / Compromiso</h3>
-                <input type="text" id="input-nombre-deuda" placeholder="Ej: Banco, Amigo..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
-                <select id="input-tipo-deuda" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
-                    <option value="debo">Lo debo (Salida)</option>
-                    <option value="cobro">Me deben (Entrada)</option>
-                </select>
-                <input type="number" id="input-monto-deuda" placeholder="Monto en pesos" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
-                <div class="flex gap-2 pt-2">
-                    <button onclick="cerrarModalDeuda()" class="w-1/2 bg-slate-800 text-slate-300 py-2 rounded-xl text-xs font-bold">Cancelar</button>
-                    <button onclick="guardarDeuda()" class="w-1/2 bg-rose-600 hover:bg-rose-500 text-white py-2 rounded-xl text-xs font-bold">Guardar</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Barra de Navegación Inferior -->
-        <div class="bg-[#070a13] border-t border-slate-800/90 px-4 py-3 flex justify-around text-[11px] text-slate-400">
-            <button onclick="cambiarVista('dashboard', this)" id="nav-dashboard" class="text-orange-400 font-bold flex flex-col items-center space-y-1 transition">
-                <span class="text-base">📊</span><span>Dashboard</span>
+        <!-- ================= BOTTOM NAVIGATION (Menú Inferior) ================= -->
+        <div class="absolute bottom-0 w-full bg-white/95 backdrop-blur-md pb-6 pt-4 px-8 flex justify-between border-t border-gray-100 z-40 rounded-b-[34px]">
+            <!-- Home -->
+            <button onclick="cambiarVista('dashboard', 'nav-home')" id="nav-home" class="flex flex-col items-center gap-1 text-coral transition-colors">
+                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></svg>
             </button>
-            <button onclick="cambiarVista('chat', this)" id="nav-chat" class="hover:text-slate-200 flex flex-col items-center space-y-1 transition">
-                <span class="text-base">🤖</span><span>Bot IA</span>
+            <!-- Cierre (Charts) -->
+            <button onclick="cambiarVista('cierre', 'nav-cierre')" id="nav-cierre" class="flex flex-col items-center gap-1 text-gray-300 hover:text-gray-500 transition-colors">
+                <svg class="w-6 h-6 stroke-current" fill="none" stroke-width="2" viewBox="0 0 24 24"><rect x="18" y="3" width="4" height="18" rx="1"/><rect x="10" y="8" width="4" height="13" rx="1"/><rect x="2" y="13" width="4" height="8" rx="1"/></svg>
             </button>
-            <button onclick="cambiarVista('analitica', this)" id="nav-analitica" class="hover:text-slate-200 flex flex-col items-center space-y-1 transition">
-                <span class="text-base">📈</span><span>Analítica</span>
+            <!-- Chat IA -->
+            <button onclick="cambiarVista('chat', 'nav-chat')" id="nav-chat" class="flex flex-col items-center gap-1 text-gray-300 hover:text-gray-500 transition-colors relative">
+                <svg class="w-6 h-6 stroke-current" fill="none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-coral rounded-full border-2 border-white"></span>
             </button>
-            <button onclick="cambiarVista('ajustes', this)" id="nav-ajustes" class="hover:text-slate-200 flex flex-col items-center space-y-1 transition">
-                <span class="text-base">⚙️</span><span>Ajustes</span>
+            <!-- Ajustes -->
+            <button onclick="cambiarVista('ajustes', 'nav-ajustes')" id="nav-ajustes" class="flex flex-col items-center gap-1 text-gray-300 hover:text-gray-500 transition-colors">
+                <svg class="w-6 h-6 stroke-current" fill="none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             </button>
         </div>
 
     </div>
 
-    <!-- Script de Lógica con Sincronización LocalStorage -->
+    <!-- SCRIPT LOGICA -->
     <script>
-        let bolsillos = JSON.parse(localStorage.getItem('mauro_bolsillos')) || [];
-        let deudas = JSON.parse(localStorage.getItem('mauro_deudas')) || [];
-
-        function guardarEnMemoria() {
-            localStorage.setItem('mauro_bolsillos', JSON.stringify(bolsillos));
-            localStorage.setItem('mauro_deudas', JSON.stringify(deudas));
-            calcularSaldoReal();
+        // Lógica de Memoria
+        let bolsillos = JSON.parse(localStorage.getItem('mauro_bolsillos_v2')) || [];
+        const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        
+        function inicializar() {
+            let fecha = new Date();
+            document.getElementById("mes-actual").innerText = meses[fecha.getMonth()] + " " + fecha.getFullYear();
+            renderBolsillos();
         }
 
         function formatearPesos(valor) {
-            return "$ " + Number(valor).toLocaleString('es-CO');
+            // Formato de la imagen: $17,727.21 (usamos miles con coma para que se vea premium)
+            return "$" + Number(valor).toLocaleString('en-US');
+        }
+
+        function guardarEnMemoria() {
+            localStorage.setItem('mauro_bolsillos_v2', JSON.stringify(bolsillos));
+            calcularSaldoReal();
         }
 
         function calcularSaldoReal() {
-            let totalBolsillos = bolsillos.reduce((acc, b) => acc + Number(b.monto), 0);
-            let totalDeudasDebo = deudas.filter(d => d.tipo === 'debo').reduce((acc, d) => acc + Number(d.monto), 0);
-            let saldoReal = totalBolsillos - totalDeudasDebo;
-            
-            document.getElementById("saldo-real").innerText = formatearPesos(saldoReal);
-            actualizarAnalitica(totalBolsillos, totalDeudasDebo);
+            let total = bolsillos.reduce((acc, b) => acc + Number(b.monto), 0);
+            document.getElementById("saldo-real").innerText = formatearPesos(total);
         }
 
-        function cambiarVista(vista, btn) {
+        // Sistema de Navegación Soft UI
+        function cambiarVista(vista, navId) {
             document.getElementById("vista-dashboard").classList.add("hidden");
+            document.getElementById("vista-cierre").classList.add("hidden");
             document.getElementById("vista-chat").classList.add("hidden");
-            document.getElementById("vista-analitica").classList.add("hidden");
             document.getElementById("vista-ajustes").classList.add("hidden");
 
             document.getElementById("vista-" + vista).classList.remove("hidden");
 
-            document.querySelectorAll('.bg-\\[\\#070a13\\] button').forEach(b => {
-                b.classList.remove("text-orange-400", "font-bold");
-                b.classList.add("text-slate-400");
+            // Resetear iconos nav
+            let botonesNav = ['nav-home', 'nav-cierre', 'nav-chat', 'nav-ajustes'];
+            botonesNav.forEach(id => {
+                let btn = document.getElementById(id);
+                btn.classList.remove("text-coral");
+                btn.classList.add("text-gray-300");
+                // Cambiar el fill del SVG (solo el activo tiene fill, los demás stroke)
+                if(id === navId) {
+                    btn.classList.remove("text-gray-300");
+                    btn.classList.add("text-coral");
+                }
             });
-
-            if(btn) {
-                btn.classList.remove("text-slate-400");
-                btn.classList.add("text-orange-400", "font-bold");
+            
+            // Scroll al fondo si es chat
+            if(vista === 'chat') {
+                let box = document.getElementById("chat-box");
+                box.scrollTop = box.scrollHeight;
             }
         }
 
-        // Modales de Bolsillos
+        // Modales y Datos
         function abrirModalBolsillo() {
             document.getElementById("modal-bolsillo").classList.remove("hidden");
         }
+        
         function cerrarModalBolsillo() {
             document.getElementById("modal-bolsillo").classList.add("hidden");
             document.getElementById("input-nombre-bolsillo").value = "";
             document.getElementById("input-monto-bolsillo").value = "";
         }
+
         function guardarBolsillo() {
             let nombre = document.getElementById("input-nombre-bolsillo").value.trim();
             let monto = document.getElementById("input-monto-bolsillo").value;
-            if(!nombre || monto === "") return alert("Completa los campos");
+            if(!nombre || monto === "") return alert("Faltan datos");
 
-            bolsillos.push({ nombre, monto: Number(monto) });
+            // Asignar un emoji al azar para diseño
+            const iconos = ['🍔', '🛒', '⚡', '🚗', '🎓', '💼', '🏠', '📱'];
+            let icono = iconos[Math.floor(Math.random() * iconos.length)];
+
+            bolsillos.push({ nombre, monto: Number(monto), icono });
             guardarEnMemoria();
             renderBolsillos();
             cerrarModalBolsillo();
@@ -253,164 +295,76 @@
             contenedor.innerHTML = "";
             
             if (bolsillos.length === 0) {
-                contenedor.innerHTML = `<p class="text-xs text-slate-500 italic text-center py-2">Bolsillos limpios.</p>`;
-                return;
+                contenedor.innerHTML = `<p class="text-sm text-gray-400 text-center py-4">No hay registros aún.</p>`;
+            } else {
+                bolsillos.forEach((b, index) => {
+                    contenedor.innerHTML += `
+                        <div class="flex items-center justify-between bg-white p-3.5 rounded-3xl card-shadow border border-gray-50">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-xl shadow-sm">
+                                    ${b.icono}
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900 text-sm">${b.nombre}</h4>
+                                    <p class="text-[11px] text-gray-400">Activo</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-end">
+                                <span class="font-extrabold text-gray-900 text-sm">${formatearPesos(b.monto)}</span>
+                                <button onclick="borrarRegistro(${index})" class="text-[10px] text-red-400 font-bold mt-1 uppercase tracking-wider">Borrar</button>
+                            </div>
+                        </div>`;
+                });
             }
-
-            bolsillos.forEach((b, index) => {
-                contenedor.innerHTML += `
-                    <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
-                        <div>
-                            <p class="font-bold text-slate-200">${b.nombre}</p>
-                            <p class="text-orange-400 font-extrabold mt-0.5">${formatearPesos(b.monto)}</p>
-                        </div>
-                        <button onclick="eliminarBolsillo(${index})" class="text-rose-400 hover:text-rose-300 font-semibold bg-rose-500/10 px-2 py-1 rounded-lg">Borrar</button>
-                    </div>`;
-            });
+            calcularSaldoReal();
         }
 
-        function eliminarBolsillo(index) {
+        function borrarRegistro(index) {
             bolsillos.splice(index, 1);
             guardarEnMemoria();
             renderBolsillos();
         }
 
-        // Modales de Deudas
-        function abrirModalDeuda() {
-            document.getElementById("modal-deuda").classList.remove("hidden");
-        }
-        function cerrarModalDeuda() {
-            document.getElementById("modal-deuda").classList.add("hidden");
-            document.getElementById("input-nombre-deuda").value = "";
-            document.getElementById("input-monto-deuda").value = "";
-        }
-        function guardarDeuda() {
-            let nombre = document.getElementById("input-nombre-deuda").value.trim();
-            let tipo = document.getElementById("input-tipo-deuda").value;
-            let monto = document.getElementById("input-monto-deuda").value;
-            if(!nombre || monto === "") return alert("Completa los campos");
-
-            deudas.push({ nombre, tipo, monto: Number(monto) });
-            guardarEnMemoria();
-            renderDeudas();
-            cerrarModalDeuda();
-        }
-
-        function renderDeudas() {
-            const contenedor = document.getElementById("lista-deudas");
-            contenedor.innerHTML = "";
-
-            if (deudas.length === 0) {
-                contenedor.innerHTML = `<p class="text-xs text-slate-500 italic text-center py-2">Sin compromisos registrados.</p>`;
-                return;
-            }
-
-            deudas.forEach((d, index) => {
-                let color = d.tipo === 'debo' ? 'text-rose-400' : 'text-emerald-400';
-                let signo = d.tipo === 'debo' ? '-' : '+';
-                contenedor.innerHTML += `
-                    <div class="flex justify-between items-center bg-slate-900/80 p-3 rounded-xl border border-slate-800">
-                        <div>
-                            <p class="font-bold ${color}">${d.nombre} (${d.tipo === 'debo' ? 'Debo' : 'Me deben'})</p>
-                        </div>
-                        <div class="text-right">
-                            <span class="font-extrabold ${color}">${signo} ${formatearPesos(d.monto)}</span>
-                            <br><button onclick="eliminarDeuda(${index})" class="text-[10px] text-rose-500 hover:underline mt-1">Borrar</button>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        function eliminarDeuda(index) {
-            deudas.splice(index, 1);
-            guardarEnMemoria();
-            renderDeudas();
-        }
-
-        function generarCalendario() {
-            const grid = document.getElementById("calendario-grid");
-            grid.innerHTML = "";
-            ['L', 'M', 'Mi', 'J', 'V', 'S', 'D'].forEach(d => {
-                grid.innerHTML += `<span class="font-bold text-slate-500 text-[10px]">${d}</span>`;
-            });
-            for (let i = 1; i <= 30; i++) {
-                let esHoy = i === 22 ? 'bg-orange-500 text-white font-black shadow-md shadow-orange-500/30' : 'bg-slate-900/80 text-slate-300 hover:bg-slate-800';
-                grid.innerHTML += `<div onclick="verDetalleDia(${i})" class="p-2 rounded-xl cursor-pointer text-center text-xs transition ${esHoy}">${i}</div>`;
-            }
-        }
-
-        function verDetalleDia(dia) {
-            document.getElementById("info-dia").innerHTML = `<strong>Día ${dia}:</strong> Sin alertas críticas programadas.`;
-        }
-
-        function actualizarAnalitica(bTotal, dTotal) {
-            let porcentaje = bTotal > 0 ? Math.max(0, Math.min(100, Math.round(((bTotal - dTotal) / bTotal) * 100))) : 100;
-            document.getElementById("porcentaje-salud").innerText = porcentaje + "%";
-            document.getElementById("texto-analitica").innerText = `Tienes ${bolsillos.length} bolsillos activos y ${deudas.length} compromisos registrados.`;
-        }
-
-        function preguntarRapido(texto) {
-            document.getElementById("chat-input").value = texto;
-            enviarAlBot();
-        }
-
+        // Lógica Bot
         function enviarAlBot() {
             const input = document.getElementById("chat-input");
             const chatBox = document.getElementById("chat-box");
             let texto = input.value.trim();
             if (!texto) return;
 
+            // Burbuja Usuario
             chatBox.innerHTML += `
-                <div class="bg-slate-900 p-3 rounded-2xl ml-6 border border-slate-800">
-                    <p class="font-bold text-slate-300 mb-0.5">Tú:</p>
-                    <p class="text-slate-200">${texto}</p>
+                <div class="flex gap-3 justify-end">
+                    <div class="bg-coral text-white p-3.5 rounded-2xl rounded-tr-none card-shadow text-sm max-w-[80%]">
+                        ${texto}
+                    </div>
                 </div>`;
             
-            let totalBolsillos = bolsillos.reduce((acc, b) => acc + Number(b.monto), 0);
-            let totalDeudas = deudas.filter(d => d.tipo === 'debo').reduce((acc, d) => acc + Number(d.monto), 0);
-            let respuesta = `Analizando tu estado actual... Tienes un total de bolsillos por ${formatearPesos(totalBolsillos)} y deudas por ${formatearPesos(totalDeudas)}. Evalúa bien antes de mover capital.`;
-
-            let textoLC = texto.toLowerCase();
-            if (textoLC.includes("gastar") || textoLC.includes("comprar")) {
-                if (totalBolsillos - totalDeudas <= 50000) {
-                    respuesta = `⚠️ Alerta de Auditoría: Tu margen libre actual es bajo (${formatearPesos(totalBolsillos - totalDeudas)}). No te recomiendo hacer gastos fuertes en este momento.`;
-                } else {
-                    respuesta = `✅ Tienes suficiente liquidez libre (${formatearPesos(totalBolsillos - totalDeudas)}). El gasto proyectado es viable siempre y cuando cubras tus deudas próximas.`;
-                }
-            } else if (textoLC.includes("resumen") || textoLC.includes("deudas")) {
-                respuesta = `📋 Tienes ${deudas.length} compromisos registrados que suman ${formatearPesos(totalDeudas)}.`;
-            }
-
-            setTimeout(() => {
-                chatBox.innerHTML += `
-                    <div class="bg-purple-950/40 border border-purple-500/30 p-3 rounded-2xl mr-6 text-purple-100">
-                        <p class="font-bold text-purple-300 mb-0.5">🤖 Bot Analista:</p>
-                        <p>${respuesta}</p>
-                    </div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 500);
-
             input.value = "";
             chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Respuesta Bot Simulada
+            setTimeout(() => {
+                chatBox.innerHTML += `
+                    <div class="flex gap-3">
+                        <div class="w-8 h-8 rounded-full bg-soft-purple flex items-center justify-center text-sm shadow-sm">🤖</div>
+                        <div class="bg-white p-3.5 rounded-2xl rounded-tl-none card-shadow text-sm text-gray-700 max-w-[80%]">
+                            El nuevo diseño organiza tu información priorizando la limpieza visual. Te sugiero usar la pestaña central para tus cierres.
+                        </div>
+                    </div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 800);
         }
 
         function limpiarTodo() {
-            if(confirm("¿Seguro que deseas borrar todos los registros?")) {
-                localStorage.clear();
+            if(confirm("¿Seguro que deseas eliminar los datos?")) {
+                localStorage.removeItem('mauro_bolsillos_v2');
                 bolsillos = [];
-                deudas = [];
                 renderBolsillos();
-                renderDeudas();
-                calcularSaldoReal();
             }
         }
 
-        window.onload = function() {
-            renderBolsillos();
-            renderDeudas();
-            calcularSaldoReal();
-            generarCalendario();
-        };
+        window.onload = inicializar;
     </script>
 </body>
 </html>
