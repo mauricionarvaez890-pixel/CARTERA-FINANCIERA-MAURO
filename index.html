@@ -15,8 +15,9 @@
         
         .bg-coral { background-color: #ff5a5f; }
         .text-coral { color: #ff5a5f; }
-        .bg-soft-yellow { background-color: #ffdf8d; }
-        .bg-soft-purple { background-color: #c8b4ff; }
+        .bg-soft-yellow { background-color: #ffe69c; }
+        .bg-soft-red { background-color: #ff999d; }
+        .bg-soft-purple { background-color: #d1c4e9; }
         
         .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
         .accordion-content.open { max-height: 500px; }
@@ -30,20 +31,63 @@
         
         <div class="flex-1 overflow-y-auto pb-32 pt-2 relative">
 
-            <!-- ================= VISTA 1: HOME ================= -->
-            <div id="vista-home" class="pt-8 px-6 space-y-6">
-                <!-- Saldo Disponible -->
-                <div class="text-center mt-2 relative">
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Disponible Real</p>
-                    <h1 id="saldo-disponible" class="text-[42px] font-extrabold tracking-tighter text-gray-900 leading-tight">$0</h1>
+            <!-- ================= VISTA 1: HOME (CON NUEVO ESTILO DE BARRAS) ================= -->
+            <div id="vista-home" class="pt-6 px-6 space-y-5">
+                <!-- Selector de Mes Superior (Estilo Referencia) -->
+                <div class="flex justify-between items-center text-xs font-bold text-gray-400 px-2">
+                    <button onclick="cambiarMesHome(-1)" class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500">&lt;</button>
+                    <div class="flex items-center gap-1 text-gray-800">
+                        <span>📅</span> <span id="label-mes-home">Febrero 2026</span>
+                    </div>
+                    <button onclick="cambiarMesHome(1)" class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500">&gt;</button>
+                </div>
+
+                <!-- Saldo Principal / Disponible -->
+                <div class="text-center">
+                    <h1 id="saldo-disponible" class="text-[38px] font-extrabold tracking-tight text-gray-900 leading-none">$0</h1>
+                    <!-- Bolsillos pequeños o Tags superiores -->
+                    <div class="flex justify-center items-center gap-2 mt-3">
+                        <span class="bg-coral text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-sm">Personal</span>
+                        <span class="bg-gray-100 text-gray-600 text-[11px] font-bold px-3 py-1 rounded-full">Test</span>
+                    </div>
                     <!-- Aviso de dinero congelado -->
                     <div id="aviso-congelado" class="hidden mt-2 inline-flex items-center gap-1.5 bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-[11px] font-bold">
-                        <span>🔒</span> <span id="monto-congelado">$0</span> congelados (Pagos a 3 días)
+                        <span>🔒</span> <span id="monto-congelado">$0</span> congelados (Próx. pagos)
                     </div>
                 </div>
 
-                <!-- Bolsillos (Fuentes de dinero) -->
-                <div class="space-y-3 mt-4">
+                <!-- Tarjetas de Categorías / Gráfica de Barras Verticales (Estilo Referencia) -->
+                <div class="grid grid-cols-3 gap-2.5 pt-2">
+                    <!-- Barra 1: Bolsillos / General -->
+                    <div class="bg-soft-yellow/60 rounded-3xl p-3 flex flex-col justify-between h-40 relative overflow-hidden card-shadow">
+                        <div class="text-[10px] font-extrabold text-amber-900/60 uppercase truncate">Bolsillos</div>
+                        <div class="flex-1 flex items-end justify-center my-2">
+                            <div id="barra-vis-1" class="w-full bg-amber-400 rounded-t-2xl transition-all duration-500" style="height: 60%;"></div>
+                        </div>
+                        <div class="text-xs font-extrabold text-gray-900 text-center" id="monto-vis-1">$1.2M</div>
+                    </div>
+
+                    <!-- Barra 2: Gastos Hormiga -->
+                    <div class="bg-soft-red/40 rounded-3xl p-3 flex flex-col justify-between h-40 relative overflow-hidden card-shadow">
+                        <div class="text-[10px] font-extrabold text-red-900/60 uppercase truncate">Hormigas</div>
+                        <div class="flex-1 flex items-end justify-center my-2">
+                            <div id="barra-vis-2" class="w-full bg-coral rounded-t-2xl transition-all duration-500" style="height: 30%;"></div>
+                        </div>
+                        <div class="text-xs font-extrabold text-gray-900 text-center" id="monto-vis-2">$0</div>
+                    </div>
+
+                    <!-- Barra 3: Deudas / Vencimientos -->
+                    <div class="bg-soft-purple/50 rounded-3xl p-3 flex flex-col justify-between h-40 relative overflow-hidden card-shadow">
+                        <div class="text-[10px] font-extrabold text-purple-900/60 uppercase truncate">Deudas</div>
+                        <div class="flex-1 flex items-end justify-center my-2">
+                            <div id="barra-vis-3" class="w-full bg-purple-400 rounded-t-2xl transition-all duration-500" style="height: 20%;"></div>
+                        </div>
+                        <div class="text-xs font-extrabold text-gray-900 text-center" id="monto-vis-3">$0</div>
+                    </div>
+                </div>
+
+                <!-- Bolsillos Desplazables (Bajo las barras) -->
+                <div class="space-y-2">
                     <div class="flex justify-between items-center px-1">
                         <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tus Bolsillos</h3>
                     </div>
@@ -52,8 +96,8 @@
                     </div>
                 </div>
 
-                <!-- Deudas y Facturas -->
-                <div class="space-y-3 mt-4">
+                <!-- Deudas Pendientes -->
+                <div class="space-y-2">
                     <div class="flex justify-between items-center px-1">
                         <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Deudas Pendientes</h3>
                     </div>
@@ -62,8 +106,8 @@
                     </div>
                 </div>
 
-                <!-- Gastos Hormiga (Historial por Días) -->
-                <div class="space-y-3 mt-4">
+                <!-- Gastos Hormiga (Historial por Días - Modificación conservada) -->
+                <div class="space-y-2">
                     <div class="flex justify-between items-center px-1">
                         <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Gastos Hormiga (Historial)</h3>
                     </div>
@@ -247,6 +291,9 @@
         };
 
         let fechaActualCalendario = new Date(); // Mes actual
+        let fechaHomeVisual = new Date();
+
+        const nombresMesesArr = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
         const formatearPesos = (val) => "$" + Number(val).toLocaleString('es-CO');
         
@@ -255,9 +302,15 @@
             e.target.value = valorPuro ? Number(valorPuro).toLocaleString('es-CO') : "";
         });
 
+        function cambiarMesHome(dir) {
+            fechaHomeVisual.setMonth(fechaHomeVisual.getMonth() + dir);
+            document.getElementById("label-mes-home").innerText = `${nombresMesesArr[fechaHomeVisual.getMonth()]} ${fechaHomeVisual.getFullYear()}`;
+        }
+
         function calcularFinanzas() {
             let totalBolsillos = db.bolsillos.reduce((acc, b) => acc + Number(b.monto), 0);
             let totalHormigas = db.hormigas.reduce((acc, h) => acc + Number(h.monto), 0);
+            let totalDeudas = db.deudas.reduce((acc, d) => acc + Number(d.monto), 0);
             
             let hoy = new Date();
             let montoCongelado = 0;
@@ -280,6 +333,16 @@
             let disponibleReal = (totalBolsillos - totalHormigas) - montoCongelado;
             document.getElementById("saldo-disponible").innerText = formatearPesos(disponibleReal);
             
+            // Actualizar montos y alturas de las barras de la interfaz nueva
+            document.getElementById("monto-vis-1").innerText = formatearPesos(totalBolsillos);
+            document.getElementById("monto-vis-2").innerText = formatearPesos(totalHormigas);
+            document.getElementById("monto-vis-3").innerText = formatearPesos(totalDeudas);
+
+            let maxVal = Math.max(totalBolsillos, totalHormigas, totalDeudas, 1);
+            document.getElementById("barra-vis-1").style.height = Math.max(15, Math.min(90, (totalBolsillos / maxVal) * 85)) + "%";
+            document.getElementById("barra-vis-2").style.height = Math.max(15, Math.min(90, (totalHormigas / maxVal) * 85)) + "%";
+            document.getElementById("barra-vis-3").style.height = Math.max(15, Math.min(90, (totalDeudas / maxVal) * 85)) + "%";
+
             const avisoCongelado = document.getElementById("aviso-congelado");
             if(montoCongelado > 0) {
                 avisoCongelado.classList.remove("hidden");
@@ -290,6 +353,8 @@
         }
 
         function renderUI() {
+            document.getElementById("label-mes-home").innerText = `${nombresMesesArr[fechaHomeVisual.getMonth()]} ${fechaHomeVisual.getFullYear()}`;
+
             // Bolsillos
             const contBolsillos = document.getElementById("lista-bolsillos");
             contBolsillos.innerHTML = db.bolsillos.length === 0 ? '<p class="text-xs text-gray-400 p-2">Sin bolsillos creados</p>' : '';
@@ -317,7 +382,6 @@
                     </div>`;
             });
 
-            // Gastos Hormiga agrupar por Días (El más reciente de primero)
             renderizarHistorialHormigas();
             renderCalendarioMes();
             calcularFinanzas();
@@ -332,20 +396,18 @@
                 return;
             }
 
-            // Agrupar por fecha
             let grupos = {};
             db.hormigas.forEach(h => {
                 if(!grupos[h.fecha]) grupos[h.fecha] = [];
                 grupos[h.fecha].push(h);
             });
 
-            // Ordenar fechas descendente (más reciente arriba)
             let fechasOrdenadas = Object.keys(grupos).sort((a,b) => new Date(b) - new Date(a));
 
             fechasOrdenadas.forEach((fecha, index) => {
                 let listaItem = grupos[fecha];
                 let totalDia = listaItem.reduce((acc, curr) => acc + curr.monto, 0);
-                let isOpen = index === 0 ? "open" : ""; // El primero abierto por defecto
+                let isOpen = index === 0 ? "open" : "";
                 let rotateClass = index === 0 ? "rotate-180" : "";
 
                 let htmlItems = "";
@@ -386,16 +448,13 @@
             ico.classList.toggle("rotate-180");
         }
 
-        // CALENDARIO COMPLETO INTERACTIVO
         function renderCalendarioMes() {
             let anio = fechaActualCalendario.getFullYear();
             let mes = fechaActualCalendario.getMonth();
             
-            const nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-            document.getElementById("mes-anio-titulo").innerText = `${nombresMeses[mes]} ${anio}`;
+            document.getElementById("mes-anio-titulo").innerText = `${nombresMesesArr[mes]} ${anio}`;
 
             let primerDiaIndex = new Date(anio, mes, 1).getDay();
-            // Ajustar lunes como inicio (0=Lunes en vez de Domingo)
             primerDiaIndex = primerDiaIndex === 0 ? 6 : primerDiaIndex - 1;
             
             let totalDiasMes = new Date(anio, mes + 1, 0).getDate();
@@ -403,12 +462,10 @@
             let grilla = document.getElementById("grilla-calendario");
             grilla.innerHTML = "";
 
-            // Espacios vacíos previos
             for(let i=0; i<primerDiaIndex; i++) {
                 grilla.innerHTML += `<div></div>`;
             }
 
-            // Días del mes
             let hoyStr = new Date().toISOString().split('T')[0];
 
             for(let dia=1; dia<=totalDiasMes; dia++) {
@@ -433,7 +490,6 @@
         function seleccionarDiaCalendario(fechaStr) {
             document.getElementById("titulo-balance-dia").innerText = `Balance del ${fechaStr}`;
             
-            // Filtrar hormigas y deudas de este día
             let hormigasDia = db.hormigas.filter(h => h.fecha === fechaStr);
             let totalHormigaDia = hormigasDia.reduce((acc, h) => acc + h.monto, 0);
             
@@ -558,7 +614,6 @@
             cerrarModal();
         }
 
-        // CHAT BOT IA INTELIGENTE Y DINÁMICO
         function enviarAlBot() {
             const input = document.getElementById("chat-input");
             const chatBox = document.getElementById("chat-box");
@@ -575,11 +630,9 @@
             input.value = "";
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Simulación Analítica Avanzada de la IA basada en la DB real de Mauricio
             setTimeout(() => {
                 let totalBolsillos = db.bolsillos.reduce((acc, b) => acc + b.monto, 0);
                 let totalHormigas = db.hormigas.reduce((acc, h) => acc + h.monto, 0);
-                let totalDeudas = db.deudas.reduce((acc, d) => acc + d.monto, 0);
                 let disponible = totalBolsillos - totalHormigas;
 
                 let respuestaIA = "";
