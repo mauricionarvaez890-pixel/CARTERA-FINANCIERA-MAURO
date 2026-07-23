@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cartera Financiera - Soft UI</title>
+    <title>Cartera IA Inteligente</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -13,132 +13,147 @@
         .card-shadow { box-shadow: 0 10px 25px -5px rgba(0,0,0,0.03); }
         .modal-shadow { box-shadow: 0 -15px 40px -10px rgba(0,0,0,0.1); }
         
-        /* Colores exactos de tu imagen */
         .bg-coral { background-color: #ff5a5f; }
         .text-coral { color: #ff5a5f; }
         .bg-soft-yellow { background-color: #ffdf8d; }
-        .bg-soft-coral { background-color: #ff8c8f; }
         .bg-soft-purple { background-color: #c8b4ff; }
         
-        .bar-animate { transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .accordion-content.open { max-height: 500px; }
+        .rotate-180 { transform: rotate(180deg); transition: transform 0.3s; }
     </style>
 </head>
 <body class="min-h-screen flex justify-center items-center p-2">
 
-    <!-- Contenedor Principal (Estilo iPhone) -->
+    <!-- Contenedor Principal -->
     <div class="w-full max-w-[390px] bg-white rounded-[40px] shadow-2xl overflow-hidden flex flex-col h-[92vh] relative border-[6px] border-gray-900">
         
-        <!-- VISTAS DE LA APLICACIÓN -->
-        <div class="flex-1 overflow-y-auto pb-24 relative">
+        <div class="flex-1 overflow-y-auto pb-28 relative">
 
-            <!-- ================= VISTA 1: DASHBOARD (HOME) ================= -->
-            <div id="vista-dashboard" class="pt-8 px-6 space-y-6">
-                
-                <!-- Selector de Fecha -->
-                <div class="flex justify-center items-center gap-4 text-gray-800 font-semibold text-sm">
-                    <button class="text-gray-400 hover:text-gray-800">❮</button>
-                    <span class="flex items-center gap-2">📅 <span id="mes-actual">Julio 2026</span></span>
-                    <button class="text-gray-400 hover:text-gray-800">❯</button>
-                </div>
-
-                <!-- Saldo Gigante -->
-                <div class="text-center mt-2">
-                    <h1 id="saldo-real" class="text-[42px] font-extrabold tracking-tighter text-gray-900 leading-tight">$0</h1>
-                    
-                    <!-- Píldoras (Tags) -->
-                    <div class="flex justify-center gap-2 mt-3">
-                        <span class="bg-coral text-white px-3 py-1 rounded-full text-[11px] font-semibold tracking-wide">Principal</span>
-                        <span class="bg-gray-100 text-gray-500 px-3 py-1 rounded-full text-[11px] font-semibold tracking-wide border border-gray-200">Ahorro</span>
-                        <button onclick="abrirModalBolsillo()" class="text-gray-400 px-2">+</button>
+            <!-- ================= VISTA 1: HOME ================= -->
+            <div id="vista-home" class="pt-10 px-6 space-y-6">
+                <!-- Saldo Disponible -->
+                <div class="text-center mt-2 relative">
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Disponible Real</p>
+                    <h1 id="saldo-disponible" class="text-[42px] font-extrabold tracking-tighter text-gray-900 leading-tight">$0</h1>
+                    <!-- Aviso de dinero congelado -->
+                    <div id="aviso-congelado" class="hidden mt-2 inline-flex items-center gap-1.5 bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-[11px] font-bold">
+                        <span>🔒</span> <span id="monto-congelado">$0</span> congelados (Pagos a 3 días)
                     </div>
                 </div>
 
-                <!-- Gráficos de Barras (Soft UI) -->
-                <div class="flex justify-center items-end gap-5 h-44 mt-4 mb-2">
-                    <!-- Barra 1 -->
-                    <div class="flex flex-col items-center gap-2">
-                        <div class="w-14 bg-soft-yellow rounded-3xl relative flex items-end justify-center pb-3 bar-animate" style="height: 60%;">
-                            <span class="text-[10px] font-bold text-yellow-800 opacity-70">🍔</span>
-                        </div>
-                        <span class="text-[11px] font-bold text-gray-500">Bolsillos</span>
-                    </div>
-                    <!-- Barra 2 -->
-                    <div class="flex flex-col items-center gap-2">
-                        <div class="w-14 bg-soft-coral rounded-3xl relative flex items-end justify-center pb-3 bar-animate" style="height: 85%;">
-                            <span class="text-[10px] font-bold text-red-800 opacity-70">🛍️</span>
-                        </div>
-                        <span class="text-[11px] font-bold text-gray-500">Ingresos</span>
-                    </div>
-                    <!-- Barra 3 -->
-                    <div class="flex flex-col items-center gap-2">
-                        <div class="w-14 bg-soft-purple rounded-3xl relative flex items-end justify-center pb-3 bar-animate" style="height: 40%;">
-                            <span class="text-[10px] font-bold text-purple-800 opacity-70">💸</span>
-                        </div>
-                        <span class="text-[11px] font-bold text-gray-500">Deudas</span>
-                    </div>
-                </div>
-
-                <!-- Lista de Registros -->
-                <div class="space-y-4">
+                <!-- Bolsillos (Fuentes de dinero) -->
+                <div class="space-y-3 mt-6">
                     <div class="flex justify-between items-center px-1">
                         <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tus Bolsillos</h3>
-                        <button onclick="abrirModalBolsillo()" class="text-coral text-xs font-bold">Añadir</button>
                     </div>
-                    <div id="lista-bolsillos" class="space-y-3">
-                        <!-- JS inyecta aquí -->
+                    <div id="lista-bolsillos" class="flex gap-3 overflow-x-auto pb-2 snap-x">
+                        <!-- JS Inyecta bolsillos aquí -->
+                    </div>
+                </div>
+
+                <!-- Deudas y Facturas -->
+                <div class="space-y-3 mt-4">
+                    <div class="flex justify-between items-center px-1">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Deudas Pendientes</h3>
+                    </div>
+                    <div id="lista-deudas" class="space-y-2">
+                        <!-- JS Inyecta deudas aquí -->
+                    </div>
+                </div>
+
+                <!-- Gastos Hormiga -->
+                <div class="space-y-3 mt-4">
+                    <div class="flex justify-between items-center px-1">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Gastos Hormiga (Hoy)</h3>
+                    </div>
+                    <div id="contenedor-hormiga" class="bg-white border border-gray-100 rounded-3xl card-shadow overflow-hidden">
+                        <!-- Botón Acordeón -->
+                        <button onclick="toggleHormiga()" class="w-full p-4 flex justify-between items-center bg-gray-50/50">
+                            <div class="flex items-center gap-3">
+                                <span class="text-xl">☕</span>
+                                <div class="text-left">
+                                    <p class="text-sm font-bold text-gray-900">Total Gastado</p>
+                                    <p id="total-hormiga-dia" class="text-xs text-gray-500 font-medium">$0</p>
+                                </div>
+                            </div>
+                            <svg id="icono-hormiga" class="w-5 h-5 text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <!-- Contenido Desplegable -->
+                        <div id="lista-hormiga" class="accordion-content bg-white px-4 divide-y divide-gray-50">
+                            <!-- JS Inyecta lista aquí -->
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ================= VISTA 2: CIERRE DE CAJA ================= -->
-            <div id="vista-cierre" class="hidden pt-8 px-6 space-y-6">
-                <div class="text-center">
-                    <span class="text-3xl">📊</span>
-                    <h2 class="text-2xl font-extrabold text-gray-900 mt-2">Cierre de Caja</h2>
-                    <p class="text-sm text-gray-500 mt-1">Cuadre rápido de flujo diario</p>
+            <!-- ================= VISTA 2: ANÁLISIS ================= -->
+            <div id="vista-analisis" class="hidden pt-8 px-6 space-y-6">
+                <h2 class="text-2xl font-extrabold text-gray-900">Análisis</h2>
+                
+                <!-- Calendario Simulado -->
+                <div class="bg-white p-4 rounded-3xl card-shadow border border-gray-100">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-gray-800">Julio 2026</h3>
+                        <div class="flex gap-2">
+                            <button class="w-8 h-8 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center">&lt;</button>
+                            <button class="w-8 h-8 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center">&gt;</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-2 text-center text-xs mb-2 text-gray-400 font-bold">
+                        <div>L</div><div>M</div><div>M</div><div>J</div><div>V</div><div>S</div><div>D</div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-2 text-center text-sm font-medium text-gray-700">
+                        <!-- Días (Ejemplo visual, el 23 está seleccionado) -->
+                        <div class="py-1">20</div><div class="py-1">21</div><div class="py-1">22</div>
+                        <div class="py-1 bg-coral text-white rounded-full font-bold shadow-md shadow-red-500/30">23</div>
+                        <div class="py-1">24</div><div class="py-1">25</div><div class="py-1">26</div>
+                    </div>
                 </div>
 
-                <div class="bg-white border border-gray-100 rounded-3xl p-5 card-shadow space-y-4">
-                    <div>
-                        <label class="text-xs font-bold text-gray-500 uppercase ml-1">Base Inicial en Caja</label>
-                        <input type="number" placeholder="$ 0" class="w-full mt-1 bg-gray-50 border-none rounded-2xl px-4 py-3.5 text-gray-900 font-bold focus:ring-2 focus:ring-coral outline-none text-lg">
+                <!-- Gráficas del día seleccionado -->
+                <div class="bg-gray-900 rounded-3xl p-5 text-white relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-coral rounded-full blur-[50px] opacity-20 -mr-10 -mt-10"></div>
+                    <h4 class="text-sm font-bold text-gray-300 mb-4">Balance del 23 de Julio</h4>
+                    <div class="flex items-end gap-4 h-32 border-b border-gray-700 pb-2">
+                        <div class="flex-1 flex flex-col items-center gap-2">
+                            <div class="w-full bg-soft-yellow rounded-t-xl transition-all" style="height: 70%;"></div>
+                            <span class="text-[10px] text-gray-400 font-bold uppercase">Ingresos</span>
+                        </div>
+                        <div class="flex-1 flex flex-col items-center gap-2">
+                            <div class="w-full bg-coral rounded-t-xl transition-all" style="height: 40%;"></div>
+                            <span class="text-[10px] text-gray-400 font-bold uppercase">Gastos</span>
+                        </div>
                     </div>
-                    <div>
-                        <label class="text-xs font-bold text-gray-500 uppercase ml-1">Ingresos por Ventas</label>
-                        <input type="number" placeholder="$ 0" class="w-full mt-1 bg-gray-50 border-none rounded-2xl px-4 py-3.5 text-gray-900 font-bold focus:ring-2 focus:ring-coral outline-none text-lg">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-gray-500 uppercase ml-1">Transferencias (Nequi/Bancos)</label>
-                        <input type="number" placeholder="$ 0" class="w-full mt-1 bg-gray-50 border-none rounded-2xl px-4 py-3.5 text-gray-900 font-bold focus:ring-2 focus:ring-coral outline-none text-lg">
-                    </div>
-                    <!-- Nota: Eliminada la opción de gastos en efectivo para cuadre directo -->
-                    
-                    <button class="w-full bg-coral text-white font-bold py-4 rounded-2xl shadow-lg shadow-red-500/30 mt-4 active:scale-95 transition-transform">
-                        Confirmar Cierre Diario
-                    </button>
+                    <p class="mt-4 text-xs text-gray-400 leading-relaxed">🤖 <span class="text-white font-medium">Recomendación IA:</span> Tus gastos hormiga hoy representan un 15% de tu liquidez. Evita compras impulsivas en la tarde.</p>
                 </div>
             </div>
 
-            <!-- ================= VISTA 3: CHAT IA ================= -->
+            <!-- ================= VISTA 3: BOT IA ================= -->
             <div id="vista-chat" class="hidden flex flex-col h-full">
-                <div class="pt-8 px-6 pb-4 bg-white z-10 soft-shadow">
-                    <h2 class="text-2xl font-extrabold text-gray-900">Auditor IA</h2>
-                    <p class="text-xs text-gray-500">Asistente financiero en tiempo real</p>
+                <div class="pt-8 px-6 pb-4 bg-white z-10 soft-shadow flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-extrabold text-gray-900">Asesor IA</h2>
+                        <div class="flex items-center gap-1 mt-1">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sincronizado</p>
+                        </div>
+                    </div>
+                    <button class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-xl">🎤</button>
                 </div>
                 
                 <div id="chat-box" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
-                    <!-- Mensaje Bot -->
                     <div class="flex gap-3">
-                        <div class="w-8 h-8 rounded-full bg-soft-purple flex items-center justify-center text-sm shadow-sm">🤖</div>
-                        <div class="bg-white p-3.5 rounded-2xl rounded-tl-none card-shadow text-sm text-gray-700 max-w-[80%]">
-                            Hola Mauro. Analizando tu flujo de caja con este nuevo diseño. ¿En qué te ayudo hoy?
+                        <div class="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center text-sm shadow-sm">🤖</div>
+                        <div class="bg-white p-3.5 rounded-2xl rounded-tl-none card-shadow text-sm text-gray-700 max-w-[85%] leading-relaxed">
+                            Hola. He analizado tus datos. Veo que tienes dinero congelado para una deuda próxima. ¿En qué te ayudo hoy? ¿Hablamos de inversión o revisamos presupuestos?
                         </div>
                     </div>
                 </div>
 
                 <div class="p-4 bg-white border-t border-gray-100">
                     <div class="flex gap-2">
-                        <input type="text" id="chat-input" placeholder="Pregúntame algo..." class="w-full bg-gray-100 border-none rounded-full px-5 py-3.5 text-sm text-gray-800 focus:ring-2 focus:ring-coral outline-none">
+                        <input type="text" id="chat-input" placeholder="Pregúntame o usa el micrófono..." class="w-full bg-gray-100 border-none rounded-full px-5 py-3.5 text-sm text-gray-800 focus:ring-2 focus:ring-coral outline-none font-medium">
                         <button onclick="enviarAlBot()" class="w-12 h-12 bg-coral text-white rounded-full flex items-center justify-center shadow-md shadow-red-500/20 flex-shrink-0 active:scale-95 transition-transform">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                         </button>
@@ -148,194 +163,367 @@
 
             <!-- ================= VISTA 4: AJUSTES ================= -->
             <div id="vista-ajustes" class="hidden pt-8 px-6 space-y-6">
-                <h2 class="text-2xl font-extrabold text-gray-900">Configuración</h2>
+                <h2 class="text-2xl font-extrabold text-gray-900">Ajustes</h2>
+                <div class="flex items-center gap-4 bg-white p-4 rounded-3xl card-shadow border border-gray-50">
+                    <div class="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center text-2xl">👨🏻‍💻</div>
+                    <div>
+                        <p class="font-bold text-gray-900">Hola, Mauricio</p>
+                        <p class="text-xs text-gray-500">Perfil Administrador</p>
+                    </div>
+                </div>
+
                 <div class="bg-white border border-gray-100 rounded-3xl p-2 card-shadow">
+                    <button class="w-full text-left px-4 py-4 flex items-center gap-3 text-gray-700 font-bold text-sm border-b border-gray-50">
+                        <span class="bg-gray-50 p-2 rounded-xl">📊</span> Exportar a Excel
+                    </button>
+                    <button class="w-full text-left px-4 py-4 flex items-center gap-3 text-gray-700 font-bold text-sm border-b border-gray-50">
+                        <span class="bg-gray-50 p-2 rounded-xl">🔔</span> Notificaciones de Deudas
+                    </button>
                     <button onclick="limpiarTodo()" class="w-full text-left px-4 py-4 flex items-center gap-3 text-red-500 font-bold text-sm">
-                        <span class="bg-red-50 p-2 rounded-xl">🗑️</span> Borrar todos los registros
+                        <span class="bg-red-50 p-2 rounded-xl">🗑️</span> Borrar base de datos
                     </button>
                 </div>
             </div>
 
         </div>
 
-        <!-- ================= MODAL AÑADIR (Estilo Deslizable) ================= -->
-        <div id="modal-bolsillo" class="hidden fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 flex items-end justify-center">
-            <div class="bg-white w-full max-w-[390px] rounded-t-[32px] p-6 pb-10 modal-shadow transition-transform translate-y-0 relative border-x-[6px] border-gray-900">
-                <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6"></div>
-                <h3 class="text-xl font-extrabold text-gray-900 mb-5">Nuevo Registro</h3>
+        <!-- ================= BOTÓN FLOTANTE (Menú de Creación) ================= -->
+        <div class="absolute bottom-24 right-6 z-40 flex flex-col items-end gap-3">
+            <!-- Sub-botones (ocultos por defecto) -->
+            <div id="menu-flotante" class="hidden flex-col items-end gap-2 mb-2">
+                <button onclick="abrirModal('hormiga')" class="flex items-center gap-3 bg-white px-4 py-2 rounded-full card-shadow text-sm font-bold text-gray-700 hover:text-coral">
+                    <span>Gasto Hormiga</span> <div class="w-8 h-8 bg-coral text-white rounded-full flex items-center justify-center text-lg">☕</div>
+                </button>
+                <button onclick="abrirModal('deuda')" class="flex items-center gap-3 bg-white px-4 py-2 rounded-full card-shadow text-sm font-bold text-gray-700 hover:text-purple-600">
+                    <span>Nueva Deuda</span> <div class="w-8 h-8 bg-soft-purple text-purple-900 rounded-full flex items-center justify-center text-lg">💸</div>
+                </button>
+                <button onclick="abrirModal('bolsillo')" class="flex items-center gap-3 bg-white px-4 py-2 rounded-full card-shadow text-sm font-bold text-gray-700 hover:text-green-600">
+                    <span>Nuevo Bolsillo</span> <div class="w-8 h-8 bg-soft-yellow text-yellow-900 rounded-full flex items-center justify-center text-lg">💰</div>
+                </button>
+            </div>
+            
+            <button onclick="toggleMenuFlotante()" id="btn-fab" class="w-14 h-14 bg-gray-900 text-white rounded-full flex items-center justify-center shadow-lg shadow-gray-900/30 text-2xl transition-transform duration-300">
+                +
+            </button>
+        </div>
+
+        <!-- ================= MODAL GLOBAL ================= -->
+        <div id="modal-global" onclick="cerrarModalAfuera(event)" class="hidden fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-end justify-center transition-opacity">
+            <div onclick="event.stopPropagation()" class="bg-white w-full max-w-[390px] rounded-t-[32px] p-6 pb-10 modal-shadow relative border-x-[6px] border-gray-900">
+                <div onclick="cerrarModal()" class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6 cursor-pointer"></div>
+                
+                <h3 id="titulo-modal" class="text-xl font-extrabold text-gray-900 mb-5">Nuevo Registro</h3>
+                <input type="hidden" id="tipo-registro-actual">
                 
                 <div class="space-y-4">
-                    <div class="flex gap-3">
-                        <button class="flex-1 bg-coral text-white py-2.5 rounded-xl text-sm font-bold shadow-md shadow-red-500/20">Bolsillo</button>
-                        <button class="flex-1 bg-gray-100 text-gray-500 py-2.5 rounded-xl text-sm font-bold">Deuda</button>
+                    <!-- Selector de origen de fondos (Solo para Gastos Hormiga) -->
+                    <div id="zona-fuente" class="hidden">
+                        <p class="text-xs font-bold text-gray-400 mb-2">¿De dónde salió el dinero?</p>
+                        <div id="botones-fuente" class="flex gap-2 overflow-x-auto pb-1 snap-x">
+                            <!-- Se inyectan los bolsillos como botones -->
+                        </div>
+                        <input type="hidden" id="fuente-seleccionada">
                     </div>
+
+                    <!-- Nombre / Concepto -->
+                    <input type="text" id="input-nombre" placeholder="Concepto (Ej: Café, Internet)" class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-4 text-gray-900 font-medium focus:ring-2 focus:ring-coral outline-none">
                     
-                    <input type="text" id="input-nombre-bolsillo" placeholder="Nombre (Ej: Ahorro, Arriendo)" class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-4 text-gray-900 font-medium focus:ring-2 focus:ring-coral outline-none">
-                    
+                    <!-- Monto con auto-puntos COP -->
                     <div class="relative">
                         <span class="absolute left-4 top-4 text-gray-400 font-bold">$</span>
-                        <input type="number" id="input-monto-bolsillo" placeholder="0" class="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-8 pr-4 py-4 text-gray-900 font-bold focus:ring-2 focus:ring-coral outline-none text-lg">
+                        <input type="text" id="input-monto" placeholder="0" class="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-8 pr-4 py-4 text-gray-900 font-bold focus:ring-2 focus:ring-coral outline-none text-lg">
+                    </div>
+
+                    <!-- Fecha Vencimiento (Solo para Deudas) -->
+                    <div id="zona-fecha" class="hidden">
+                        <p class="text-xs font-bold text-gray-400 mb-2">Fecha de Vencimiento</p>
+                        <input type="date" id="input-fecha" class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-4 text-gray-900 font-medium outline-none">
                     </div>
                     
-                    <div class="flex gap-3 pt-2">
-                        <button onclick="cerrarModalBolsillo()" class="w-1/3 bg-gray-100 text-gray-600 py-4 rounded-2xl text-sm font-bold">Cancelar</button>
-                        <button onclick="guardarBolsillo()" class="w-2/3 bg-gray-900 text-white py-4 rounded-2xl text-sm font-bold shadow-lg shadow-gray-900/20">Guardar</button>
-                    </div>
+                    <button onclick="guardarRegistro()" class="w-full bg-gray-900 text-white py-4 rounded-2xl text-sm font-bold shadow-lg shadow-gray-900/20">Guardar</button>
                 </div>
             </div>
         </div>
 
-        <!-- ================= BOTTOM NAVIGATION (Menú Inferior) ================= -->
-        <div class="absolute bottom-0 w-full bg-white/95 backdrop-blur-md pb-6 pt-4 px-8 flex justify-between border-t border-gray-100 z-40 rounded-b-[34px]">
-            <!-- Home -->
-            <button onclick="cambiarVista('dashboard', 'nav-home')" id="nav-home" class="flex flex-col items-center gap-1 text-coral transition-colors">
+        <!-- ================= BOTTOM NAVIGATION ================= -->
+        <div class="absolute bottom-0 w-full bg-white/95 backdrop-blur-md pb-6 pt-4 px-8 flex justify-between border-t border-gray-100 z-30 rounded-b-[34px]">
+            <button onclick="cambiarVista('home', 'nav-home')" id="nav-home" class="flex flex-col items-center gap-1 text-coral">
                 <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></svg>
             </button>
-            <!-- Cierre (Charts) -->
-            <button onclick="cambiarVista('cierre', 'nav-cierre')" id="nav-cierre" class="flex flex-col items-center gap-1 text-gray-300 hover:text-gray-500 transition-colors">
-                <svg class="w-6 h-6 stroke-current" fill="none" stroke-width="2" viewBox="0 0 24 24"><rect x="18" y="3" width="4" height="18" rx="1"/><rect x="10" y="8" width="4" height="13" rx="1"/><rect x="2" y="13" width="4" height="8" rx="1"/></svg>
+            <button onclick="cambiarVista('analisis', 'nav-analisis')" id="nav-analisis" class="flex flex-col items-center gap-1 text-gray-300">
+                <svg class="w-6 h-6 stroke-current" fill="none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
             </button>
-            <!-- Chat IA -->
-            <button onclick="cambiarVista('chat', 'nav-chat')" id="nav-chat" class="flex flex-col items-center gap-1 text-gray-300 hover:text-gray-500 transition-colors relative">
+            <button onclick="cambiarVista('chat', 'nav-chat')" id="nav-chat" class="flex flex-col items-center gap-1 text-gray-300">
                 <svg class="w-6 h-6 stroke-current" fill="none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-coral rounded-full border-2 border-white"></span>
             </button>
-            <!-- Ajustes -->
-            <button onclick="cambiarVista('ajustes', 'nav-ajustes')" id="nav-ajustes" class="flex flex-col items-center gap-1 text-gray-300 hover:text-gray-500 transition-colors">
+            <button onclick="cambiarVista('ajustes', 'nav-ajustes')" id="nav-ajustes" class="flex flex-col items-center gap-1 text-gray-300">
                 <svg class="w-6 h-6 stroke-current" fill="none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             </button>
         </div>
 
     </div>
 
-    <!-- SCRIPT LOGICA -->
     <script>
-        // Lógica de Memoria
-        let bolsillos = JSON.parse(localStorage.getItem('mauro_bolsillos_v2')) || [];
-        const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        // ESTRUCTURA DE DATOS
+        let db = JSON.parse(localStorage.getItem('finanzas_db_v1')) || {
+            bolsillos: [],
+            deudas: [],
+            hormigas: []
+        };
+
+        // Utilidades de Formato
+        const formatearPesos = (val) => "$" + Number(val).toLocaleString('es-CO');
         
-        function inicializar() {
-            let fecha = new Date();
-            document.getElementById("mes-actual").innerText = meses[fecha.getMonth()] + " " + fecha.getFullYear();
-            renderBolsillos();
+        document.getElementById("input-monto").addEventListener("input", function(e) {
+            let valorPuro = e.target.value.replace(/\D/g, "");
+            e.target.value = valorPuro ? Number(valorPuro).toLocaleString('es-CO') : "";
+        });
+
+        // LÓGICA DE CÁLCULO CORE (Disponible y Congelamiento)
+        function calcularFinanzas() {
+            let totalBolsillos = db.bolsillos.reduce((acc, b) => acc + Number(b.monto), 0);
+            let totalHormigas = db.hormigas.reduce((acc, h) => acc + Number(h.monto), 0);
+            
+            // Lógica de 3 Días para Deudas
+            let hoy = new Date();
+            let montoCongelado = 0;
+            
+            db.deudas.forEach(d => {
+                if(d.fecha) {
+                    let fechaDeuda = new Date(d.fecha);
+                    let diffTiempo = fechaDeuda.getTime() - hoy.getTime();
+                    let diffDias = Math.ceil(diffTiempo / (1000 * 3600 * 24));
+                    
+                    // Si faltan 3 días o menos, se congela
+                    if(diffDias >= 0 && diffDias <= 3) {
+                        montoCongelado += Number(d.monto);
+                        d.estado = 'congelado';
+                    } else {
+                        d.estado = 'pendiente';
+                    }
+                }
+            });
+
+            // Disponible = (Bolsillos - Hormigas) - Deudas Congeladas
+            let disponibleReal = (totalBolsillos - totalHormigas) - montoCongelado;
+            
+            document.getElementById("saldo-disponible").innerText = formatearPesos(disponibleReal);
+            
+            const avisoCongelado = document.getElementById("aviso-congelado");
+            if(montoCongelado > 0) {
+                avisoCongelado.classList.remove("hidden");
+                document.getElementById("monto-congelado").innerText = formatearPesos(montoCongelado);
+            } else {
+                avisoCongelado.classList.add("hidden");
+            }
+            
+            document.getElementById("total-hormiga-dia").innerText = formatearPesos(totalHormigas);
         }
 
-        function formatearPesos(valor) {
-            // Formato de la imagen: $17,727.21 (usamos miles con coma para que se vea premium)
-            return "$" + Number(valor).toLocaleString('en-US');
+        // RENDERIZADO VISUAL
+        function renderUI() {
+            // Render Bolsillos
+            const contBolsillos = document.getElementById("lista-bolsillos");
+            contBolsillos.innerHTML = db.bolsillos.length === 0 ? '<p class="text-xs text-gray-400">No hay bolsillos</p>' : '';
+            db.bolsillos.forEach(b => {
+                contBolsillos.innerHTML += `
+                    <div class="min-w-[120px] bg-white border border-gray-100 rounded-2xl p-3 card-shadow snap-start">
+                        <div class="text-xl mb-1">${b.icono}</div>
+                        <h4 class="text-xs text-gray-500 font-bold truncate">${b.nombre}</h4>
+                        <p class="text-sm font-extrabold text-gray-900">${formatearPesos(b.monto)}</p>
+                    </div>`;
+            });
+
+            // Render Deudas
+            const contDeudas = document.getElementById("lista-deudas");
+            contDeudas.innerHTML = db.deudas.length === 0 ? '<p class="text-xs text-gray-400">Todo al día</p>' : '';
+            db.deudas.forEach(d => {
+                let badge = d.estado === 'congelado' ? '<span class="bg-purple-100 text-purple-600 text-[9px] px-2 py-0.5 rounded-full font-bold">CONGELADO</span>' : '';
+                contDeudas.innerHTML += `
+                    <div class="flex justify-between items-center bg-white p-3 rounded-2xl border border-gray-50 card-shadow">
+                        <div class="flex flex-col">
+                            <span class="text-sm font-bold text-gray-800 flex items-center gap-2">${d.nombre} ${badge}</span>
+                            <span class="text-[10px] text-gray-400">Vence: ${d.fecha || 'Sin fecha'}</span>
+                        </div>
+                        <span class="text-sm font-extrabold text-purple-600">-${formatearPesos(d.monto)}</span>
+                    </div>`;
+            });
+
+            // Render Hormigas (Acordeón)
+            const contHormigas = document.getElementById("lista-hormiga");
+            contHormigas.innerHTML = db.hormigas.length === 0 ? '<p class="text-xs text-gray-400 py-3 text-center">No hay gastos hoy</p>' : '';
+            db.hormigas.forEach(h => {
+                contHormigas.innerHTML += `
+                    <div class="flex justify-between items-center py-3">
+                        <div class="flex flex-col">
+                            <span class="text-sm font-bold text-gray-800">${h.nombre}</span>
+                            <span class="text-[10px] text-gray-400">Hora: ${h.hora} • Pagado de: ${h.fuente}</span>
+                        </div>
+                        <span class="text-sm font-extrabold text-coral">-${formatearPesos(h.monto)}</span>
+                    </div>`;
+            });
+
+            calcularFinanzas();
         }
 
-        function guardarEnMemoria() {
-            localStorage.setItem('mauro_bolsillos_v2', JSON.stringify(bolsillos));
-            calcularSaldoReal();
-        }
-
-        function calcularSaldoReal() {
-            let total = bolsillos.reduce((acc, b) => acc + Number(b.monto), 0);
-            document.getElementById("saldo-real").innerText = formatearPesos(total);
-        }
-
-        // Sistema de Navegación Soft UI
+        // NAVEGACIÓN Y MENÚS
         function cambiarVista(vista, navId) {
-            document.getElementById("vista-dashboard").classList.add("hidden");
-            document.getElementById("vista-cierre").classList.add("hidden");
-            document.getElementById("vista-chat").classList.add("hidden");
-            document.getElementById("vista-ajustes").classList.add("hidden");
-
+            ['home', 'analisis', 'chat', 'ajustes'].forEach(v => document.getElementById("vista-" + v).classList.add("hidden"));
             document.getElementById("vista-" + vista).classList.remove("hidden");
 
-            // Resetear iconos nav
-            let botonesNav = ['nav-home', 'nav-cierre', 'nav-chat', 'nav-ajustes'];
-            botonesNav.forEach(id => {
+            ['nav-home', 'nav-analisis', 'nav-chat', 'nav-ajustes'].forEach(id => {
                 let btn = document.getElementById(id);
                 btn.classList.remove("text-coral");
                 btn.classList.add("text-gray-300");
-                // Cambiar el fill del SVG (solo el activo tiene fill, los demás stroke)
                 if(id === navId) {
                     btn.classList.remove("text-gray-300");
                     btn.classList.add("text-coral");
                 }
             });
+        }
+
+        function toggleMenuFlotante() {
+            const menu = document.getElementById("menu-flotante");
+            const btn = document.getElementById("btn-fab");
+            menu.classList.toggle("hidden");
+            menu.classList.toggle("flex");
+            btn.classList.toggle("rotate-45");
+        }
+
+        function toggleHormiga() {
+            document.getElementById("lista-hormiga").classList.toggle("open");
+            document.getElementById("icono-hormiga").classList.toggle("rotate-180");
+        }
+
+        // GESTIÓN DE MODAL
+        function abrirModal(tipo) {
+            toggleMenuFlotante(); // Cierra el menú de bolitas
+            document.getElementById("modal-global").classList.remove("hidden");
+            document.getElementById("tipo-registro-actual").value = tipo;
             
-            // Scroll al fondo si es chat
-            if(vista === 'chat') {
-                let box = document.getElementById("chat-box");
-                box.scrollTop = box.scrollHeight;
-            }
-        }
-
-        // Modales y Datos
-        function abrirModalBolsillo() {
-            document.getElementById("modal-bolsillo").classList.remove("hidden");
-        }
-        
-        function cerrarModalBolsillo() {
-            document.getElementById("modal-bolsillo").classList.add("hidden");
-            document.getElementById("input-nombre-bolsillo").value = "";
-            document.getElementById("input-monto-bolsillo").value = "";
-        }
-
-        function guardarBolsillo() {
-            let nombre = document.getElementById("input-nombre-bolsillo").value.trim();
-            let monto = document.getElementById("input-monto-bolsillo").value;
-            if(!nombre || monto === "") return alert("Faltan datos");
-
-            // Asignar un emoji al azar para diseño
-            const iconos = ['🍔', '🛒', '⚡', '🚗', '🎓', '💼', '🏠', '📱'];
-            let icono = iconos[Math.floor(Math.random() * iconos.length)];
-
-            bolsillos.push({ nombre, monto: Number(monto), icono });
-            guardarEnMemoria();
-            renderBolsillos();
-            cerrarModalBolsillo();
-        }
-
-        function renderBolsillos() {
-            const contenedor = document.getElementById("lista-bolsillos");
-            contenedor.innerHTML = "";
+            // Limpiar
+            document.getElementById("input-nombre").value = "";
+            document.getElementById("input-monto").value = "";
+            document.getElementById("input-fecha").value = "";
+            document.getElementById("fuente-seleccionada").value = "";
             
-            if (bolsillos.length === 0) {
-                contenedor.innerHTML = `<p class="text-sm text-gray-400 text-center py-4">No hay registros aún.</p>`;
-            } else {
-                bolsillos.forEach((b, index) => {
-                    contenedor.innerHTML += `
-                        <div class="flex items-center justify-between bg-white p-3.5 rounded-3xl card-shadow border border-gray-50">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-xl shadow-sm">
-                                    ${b.icono}
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-900 text-sm">${b.nombre}</h4>
-                                    <p class="text-[11px] text-gray-400">Activo</p>
-                                </div>
-                            </div>
-                            <div class="flex flex-col items-end">
-                                <span class="font-extrabold text-gray-900 text-sm">${formatearPesos(b.monto)}</span>
-                                <button onclick="borrarRegistro(${index})" class="text-[10px] text-red-400 font-bold mt-1 uppercase tracking-wider">Borrar</button>
-                            </div>
-                        </div>`;
+            // Configuraciones de UI según tipo
+            const zonaFecha = document.getElementById("zona-fecha");
+            const zonaFuente = document.getElementById("zona-fuente");
+            const titulo = document.getElementById("titulo-modal");
+
+            zonaFecha.classList.add("hidden");
+            zonaFuente.classList.add("hidden");
+
+            if(tipo === 'bolsillo') {
+                titulo.innerText = "Crear Bolsillo";
+            } else if(tipo === 'deuda') {
+                titulo.innerText = "Añadir Deuda / Factura";
+                zonaFecha.classList.remove("hidden");
+            } else if(tipo === 'hormiga') {
+                titulo.innerText = "Gasto Hormiga (Rápido)";
+                zonaFuente.classList.remove("hidden");
+                // Cargar botones de fuente dinámicamente
+                const contBotones = document.getElementById("botones-fuente");
+                contBotones.innerHTML = "";
+                db.bolsillos.forEach(b => {
+                    let btn = document.createElement("button");
+                    btn.className = "whitespace-nowrap bg-gray-100 text-gray-600 px-4 py-2 rounded-xl text-xs font-bold snap-start transition-colors";
+                    btn.innerText = b.nombre;
+                    btn.onclick = (e) => {
+                        // Resaltar seleccionado
+                        Array.from(contBotones.children).forEach(c => c.classList.replace("bg-gray-800", "bg-gray-100"));
+                        Array.from(contBotones.children).forEach(c => c.classList.replace("text-white", "text-gray-600"));
+                        e.target.classList.replace("bg-gray-100", "bg-gray-800");
+                        e.target.classList.replace("text-gray-600", "text-white");
+                        document.getElementById("fuente-seleccionada").value = b.nombre;
+                    };
+                    contBotones.appendChild(btn);
                 });
             }
-            calcularSaldoReal();
         }
 
-        function borrarRegistro(index) {
-            bolsillos.splice(index, 1);
-            guardarEnMemoria();
-            renderBolsillos();
+        function cerrarModal() {
+            document.getElementById("modal-global").classList.add("hidden");
         }
 
-        // Lógica Bot
+        function cerrarModalAfuera(event) {
+            if (event.target.id === "modal-global") cerrarModal();
+        }
+
+        function guardarRegistro() {
+            let tipo = document.getElementById("tipo-registro-actual").value;
+            let nombre = document.getElementById("input-nombre").value.trim();
+            let montoPuro = document.getElementById("input-monto").value.replace(/\./g, "");
+            
+            if(!nombre || montoPuro === "") return alert("Faltan datos");
+
+            let registro = {
+                id: Date.now(),
+                nombre,
+                monto: Number(montoPuro)
+            };
+
+            if(tipo === 'bolsillo') {
+                const iconos = ['💰', '🏦', '💳', '🐖'];
+                registro.icono = iconos[Math.floor(Math.random() * iconos.length)];
+                db.bolsillos.push(registro);
+            } 
+            else if(tipo === 'deuda') {
+                registro.fecha = document.getElementById("input-fecha").value;
+                db.deudas.push(registro);
+            } 
+            else if(tipo === 'hormiga') {
+                let fuente = document.getElementById("fuente-seleccionada").value;
+                if(!fuente) return alert("Selecciona de qué bolsillo salió el dinero");
+                registro.fuente = fuente;
+                
+                let fechaObj = new Date();
+                registro.hora = fechaObj.getHours() + ":" + (fechaObj.getMinutes()<10?'0':'') + fechaObj.getMinutes();
+                db.hormigas.push(registro);
+            }
+
+            localStorage.setItem('finanzas_db_v1', JSON.stringify(db));
+            renderUI();
+            cerrarModal();
+        }
+
+        // ================= CONEXIÓN CON LA IA (ESTRUCTURA) =================
+        function generarContextoParaIA() {
+            /* 
+               ¡Aquí está la magia de la fluidez!
+               Esta función construye un "System Prompt" invisible que se envía a la API
+               antes de que la IA responda tu mensaje.
+            */
+            let resumenBolsillos = db.bolsillos.map(b => `${b.nombre}: $${b.monto}`).join(', ');
+            let resumenDeudas = db.deudas.map(d => `${d.nombre} ($${d.monto}) Vence: ${d.fecha}`).join(', ');
+            let totalHormiga = db.hormigas.reduce((acc, h) => acc + h.monto, 0);
+
+            let promptSecreto = `
+                Actúa como mi asesor financiero experto.
+                Aquí están mis datos financieros en TIEMPO REAL:
+                - Dinero en bolsillos: ${resumenBolsillos || '0'}
+                - Deudas pendientes: ${resumenDeudas || 'Ninguna'}
+                - Gastado en 'gastos hormiga' hoy: $${totalHormiga}
+                
+                Instrucciones: Da respuestas cortas, directas, al estilo chat de WhatsApp. 
+                Si te pregunto si puedo gastar en algo, revisa mis deudas y dime si me afecta el flujo de caja.
+            `;
+            
+            return promptSecreto;
+            // Cuando consigamos la API Key de OpenAI/Gemini, este texto se envía en el "role: system"
+        }
+
         function enviarAlBot() {
             const input = document.getElementById("chat-input");
             const chatBox = document.getElementById("chat-box");
             let texto = input.value.trim();
             if (!texto) return;
 
-            // Burbuja Usuario
+            // Mensaje del usuario
             chatBox.innerHTML += `
                 <div class="flex gap-3 justify-end">
-                    <div class="bg-coral text-white p-3.5 rounded-2xl rounded-tr-none card-shadow text-sm max-w-[80%]">
+                    <div class="bg-gray-900 text-white p-3.5 rounded-2xl rounded-tr-none card-shadow text-sm max-w-[85%]">
                         ${texto}
                     </div>
                 </div>`;
@@ -343,28 +531,38 @@
             input.value = "";
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Respuesta Bot Simulada
+            // SIMULACIÓN DE RESPUESTA DE LA IA QUE USA TUS DATOS REALES
             setTimeout(() => {
+                let respuestaIA = "";
+                let congelado = document.getElementById("monto-congelado").innerText;
+                
+                if(texto.toLowerCase().includes("inversión") || texto.toLowerCase().includes("inversion")) {
+                    respuestaIA = `Analizando tu Disponible, recuerda que tienes ${congelado} apartados para pagos próximos. Te sugiero no tocar ese dinero. Del resto, podríamos mirar opciones de bajo riesgo. ¿Qué horizonte de tiempo buscas?`;
+                } else {
+                    respuestaIA = "He recibido tu mensaje. Mis sistemas leyeron tus bolsillos y deudas actuales. (Conecta la API para respuestas 100% dinámicas).";
+                }
+
                 chatBox.innerHTML += `
-                    <div class="flex gap-3">
-                        <div class="w-8 h-8 rounded-full bg-soft-purple flex items-center justify-center text-sm shadow-sm">🤖</div>
-                        <div class="bg-white p-3.5 rounded-2xl rounded-tl-none card-shadow text-sm text-gray-700 max-w-[80%]">
-                            El nuevo diseño organiza tu información priorizando la limpieza visual. Te sugiero usar la pestaña central para tus cierres.
+                    <div class="flex gap-3 mt-4">
+                        <div class="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center text-sm shadow-sm flex-shrink-0">🤖</div>
+                        <div class="bg-white p-3.5 rounded-2xl rounded-tl-none card-shadow text-sm text-gray-700 max-w-[85%] leading-relaxed">
+                            ${respuestaIA}
                         </div>
                     </div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
-            }, 800);
+            }, 1000);
         }
 
         function limpiarTodo() {
             if(confirm("¿Seguro que deseas eliminar los datos?")) {
-                localStorage.removeItem('mauro_bolsillos_v2');
-                bolsillos = [];
-                renderBolsillos();
+                localStorage.removeItem('finanzas_db_v1');
+                db = { bolsillos: [], deudas: [], hormigas: [] };
+                renderUI();
             }
         }
 
-        window.onload = inicializar;
+        // Iniciar App
+        window.onload = renderUI;
     </script>
 </body>
 </html>
