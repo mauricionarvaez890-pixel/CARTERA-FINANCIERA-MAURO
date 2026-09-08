@@ -1,799 +1,130 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cartera IA Inteligente</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        coral: '#ff5a5f',
-                        'soft-yellow': '#ffe69c',
-                        'soft-red': '#ff999d',
-                        'soft-purple': '#d1c4e9',
-                        darkBg: '#121212',
-                        darkCard: '#1E1E1E'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f4f5f7; }
-        ::-webkit-scrollbar { width: 0px; }
-        
-        /* Sombras adaptables */
-        .soft-shadow { box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05); }
-        .card-shadow { box-shadow: 0 10px 25px -5px rgba(0,0,0,0.03); }
-        .dark .card-shadow { box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); }
-        .modal-shadow { box-shadow: 0 -15px 40px -10px rgba(0,0,0,0.1); }
-        
-        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        .accordion-content.open { max-height: 500px; }
-        .rotate-180 { transform: rotate(180deg); transition: transform 0.3s; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Pedidos 24/7</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background-color: #0f172a; color: #f8fafc; padding: 20px; }
+    
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #334155; padding-bottom: 15px; }
+    h1 { font-size: 1.5rem; color: #38bdf8; }
+    .status-bar { font-size: 0.85rem; color: #94a3b8; display: flex; align-items: center; gap: 8px; }
+    .dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; }
 
-        /* Ajustes base para dark mode en scroll y body */
-        body.dark { background-color: #000; }
-    </style>
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    
+    .card { background-color: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 10px; transition: transform 0.2s; }
+    .card:hover { transform: translateY(-2px); }
+    .card-header { display: flex; justify-content: space-between; align-items: center; }
+    .client-name { font-weight: 600; font-size: 1.1rem; }
+    .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+    .badge-pendiente { background-color: #f59e0b20; color: #fbbf24; border: 1px solid #f59e0b; }
+    .badge-proceso { background-color: #3b82f620; color: #60a5fa; border: 1px solid #3b82f6; }
+    .badge-entregado { background-color: #22c55e20; color: #4ade80; border: 1px solid #22c55e; }
+    
+    .order-details { font-size: 0.95rem; color: #cbd5e1; background-color: #0f172a50; padding: 10px; border-radius: 6px; }
+    .card-footer { display: flex; justify-content: space-between; font-size: 0.85rem; color: #64748b; margin-top: 5px; }
+
+    .state-message { text-align: center; padding: 40px; color: #64748b; font-size: 1.1rem; grid-column: 1 / -1; }
+    .error-msg { color: #f87171; background-color: #450a0a; padding: 12px; border-radius: 8px; margin-bottom: 20px; display: none; }
+  </style> 
 </head>
-<body class="min-h-screen flex justify-center items-center sm:p-2 transition-colors duration-300">
+<body>
 
-    <!-- Contenedor Principal: 100dvh para no perder info en móvil -->
-    <div id="app-container" class="w-full h-[100dvh] sm:max-w-[390px] sm:h-[92vh] bg-white dark:bg-darkBg rounded-none sm:rounded-[40px] shadow-2xl overflow-hidden flex flex-col relative border-0 sm:border-[6px] border-gray-900 transition-colors duration-300">
-        
-        <div class="flex-1 overflow-y-auto pb-32 pt-2 relative">
-
-            <!-- ================= VISTA 1: HOME ================= -->
-            <div id="vista-home" class="pt-6 px-6 space-y-5">
-                <!-- Selector de Mes Superior -->
-                <div class="flex justify-between items-center text-xs font-bold text-gray-400 dark:text-gray-500 px-2">
-                    <button onclick="cambiarMesHome(-1)" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500">&lt;</button>
-                    <div class="flex items-center gap-1 text-gray-800 dark:text-gray-200">
-                        <span>📅</span> <span id="label-mes-home">Febrero 2026</span>
-                    </div>
-                    <button onclick="cambiarMesHome(1)" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500">&gt;</button>
-                </div>
-
-                <!-- Saldo Principal / Disponible -->
-                <div class="text-center">
-                    <h1 id="saldo-disponible" class="text-[38px] font-extrabold tracking-tight text-gray-900 dark:text-white leading-none">$0</h1>
-                    
-                    <!-- Bolsillos pequeños / Toggles de Perfil (FUNCIONALES) -->
-                    <div class="flex justify-center items-center gap-2 mt-3" id="contenedor-perfiles">
-                        <button onclick="cambiarPerfil('Personal')" id="btn-perf-Personal" class="bg-coral text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-sm transition-all">Personal</button>
-                        <button onclick="cambiarPerfil('Test')" id="btn-perf-Test" class="bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 text-[11px] font-bold px-3 py-1 rounded-full transition-all">Test</button>
-                    </div>
-
-                    <!-- Aviso de dinero congelado -->
-                    <div id="aviso-congelado" class="hidden mt-2 inline-flex items-center gap-1.5 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300 px-3 py-1 rounded-full text-[11px] font-bold">
-                        <span>🔒</span> <span id="monto-congelado">$0</span> congelados (Próx. pagos)
-                    </div>
-                </div>
-
-                <!-- Gráfica de Barras Verticales -->
-                <div class="grid grid-cols-3 gap-2.5 pt-2">
-                    <div class="bg-soft-yellow/60 dark:bg-yellow-900/20 rounded-3xl p-3 flex flex-col justify-between h-40 relative overflow-hidden card-shadow">
-                        <div class="text-[10px] font-extrabold text-amber-900/60 dark:text-amber-500 uppercase truncate">Bolsillos</div>
-                        <div class="flex-1 flex items-end justify-center my-2">
-                            <div id="barra-vis-1" class="w-full bg-amber-400 rounded-t-2xl transition-all duration-500" style="height: 60%;"></div>
-                        </div>
-                        <div class="text-xs font-extrabold text-gray-900 dark:text-gray-100 text-center" id="monto-vis-1">$0</div>
-                    </div>
-
-                    <div class="bg-soft-red/40 dark:bg-red-900/20 rounded-3xl p-3 flex flex-col justify-between h-40 relative overflow-hidden card-shadow">
-                        <div class="text-[10px] font-extrabold text-red-900/60 dark:text-red-400 uppercase truncate">Hormigas</div>
-                        <div class="flex-1 flex items-end justify-center my-2">
-                            <div id="barra-vis-2" class="w-full bg-coral rounded-t-2xl transition-all duration-500" style="height: 30%;"></div>
-                        </div>
-                        <div class="text-xs font-extrabold text-gray-900 dark:text-gray-100 text-center" id="monto-vis-2">$0</div>
-                    </div>
-
-                    <div class="bg-soft-purple/50 dark:bg-purple-900/20 rounded-3xl p-3 flex flex-col justify-between h-40 relative overflow-hidden card-shadow">
-                        <div class="text-[10px] font-extrabold text-purple-900/60 dark:text-purple-400 uppercase truncate">Deudas</div>
-                        <div class="flex-1 flex items-end justify-center my-2">
-                            <div id="barra-vis-3" class="w-full bg-purple-400 rounded-t-2xl transition-all duration-500" style="height: 20%;"></div>
-                        </div>
-                        <div class="text-xs font-extrabold text-gray-900 dark:text-gray-100 text-center" id="monto-vis-3">$0</div>
-                    </div>
-                </div>
-
-                <!-- Bolsillos -->
-                <div class="space-y-2">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider px-1">Tus Bolsillos</h3>
-                    <div id="lista-bolsillos" class="flex gap-3 overflow-x-auto pb-2 snap-x"></div>
-                </div>
-
-                <!-- Deudas Pendientes -->
-                <div class="space-y-2">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider px-1">Deudas del Mes</h3>
-                    <div id="lista-deudas" class="space-y-2"></div>
-                </div>
-
-                <!-- Gastos Hormiga -->
-                <div class="space-y-2">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider px-1">Gastos Hormiga (Mes)</h3>
-                    <div id="contenedor-hormigas-dias" class="space-y-3"></div>
-                </div>
-            </div>
-
-            <!-- ================= VISTA 2: ANÁLISIS (CALENDARIO) ================= -->
-            <div id="vista-analisis" class="hidden pt-8 px-6 space-y-6">
-                <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Análisis y Fechas</h2>
-                
-                <div class="bg-white dark:bg-darkCard p-5 rounded-3xl card-shadow border border-gray-100 dark:border-gray-800">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 id="mes-anio-titulo" class="font-extrabold text-gray-900 dark:text-white">Julio 2026</h3>
-                        <div class="flex gap-1">
-                            <button onclick="cambiarMes(-1)" class="w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 flex items-center justify-center font-bold">&lt;</button>
-                            <button onclick="cambiarMes(1)" class="w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 flex items-center justify-center font-bold">&gt;</button>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-7 gap-1 text-center text-xs mb-2 text-gray-400 font-bold">
-                        <div>Lu</div><div>Ma</div><div>Mi</div><div>Ju</div><div>Vi</div><div>Sá</div><div>Do</div>
-                    </div>
-                    <div id="grilla-calendario" class="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-gray-700 dark:text-gray-300"></div>
-                </div>
-
-                <!-- Gráficas Dinámicas del Día -->
-                <div class="bg-gray-900 dark:bg-black rounded-3xl p-5 text-white relative overflow-hidden card-shadow">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-coral rounded-full blur-[50px] opacity-20 -mr-10 -mt-10"></div>
-                    <h4 id="titulo-balance-dia" class="text-sm font-bold text-gray-300 mb-4">Balance del Día</h4>
-                    <div class="flex items-end gap-4 h-32 border-b border-gray-700 pb-2">
-                        <div class="flex-1 flex flex-col items-center gap-2">
-                            <div id="barra-ingresos-dia" class="w-full bg-soft-yellow rounded-t-xl transition-all" style="height: 10%;"></div>
-                            <span class="text-[10px] text-gray-400 font-bold uppercase">Deudas/Movs</span>
-                        </div>
-                        <div class="flex-1 flex flex-col items-center gap-2">
-                            <div id="barra-gastos-dia" class="w-full bg-coral rounded-t-xl transition-all" style="height: 10%;"></div>
-                            <span class="text-[10px] text-gray-400 font-bold uppercase">Hormigas</span>
-                        </div>
-                    </div>
-                    <p id="texto-recomendacion-dia" class="mt-4 text-xs text-gray-400 leading-relaxed">🤖 Selecciona un día para ver detalle.</p>
-                    
-                    <!-- NUEVO: Botón para añadir en el día específico -->
-                    <button id="btn-add-dia-especifico" onclick="abrirModalDesdeAnalisis()" class="hidden mt-4 w-full bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-xl text-xs font-bold transition-colors">
-                        + Añadir registro para este día
-                    </button>
-                </div>
-            </div>
-
-            <!-- ================= VISTA 3: BOT IA ================= -->
-            <div id="vista-chat" class="hidden flex flex-col h-full">
-                <div class="pt-8 px-6 pb-4 bg-white dark:bg-darkBg z-10 soft-shadow flex justify-between items-center transition-colors">
-                    <div>
-                        <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Asesor IA</h2>
-                        <div class="flex items-center gap-1 mt-1">
-                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sincronizado a tu base</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="chat-box" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50 dark:bg-[#181818] transition-colors">
-                    <div class="flex gap-3">
-                        <div class="w-8 h-8 rounded-full bg-gray-900 dark:bg-gray-700 flex items-center justify-center text-sm shadow-sm flex-shrink-0 text-white">🤖</div>
-                        <div class="bg-white dark:bg-darkCard dark:text-gray-200 p-3.5 rounded-2xl rounded-tl-none card-shadow text-sm text-gray-700 max-w-[85%] leading-relaxed">
-                            ¡Hola Mauricio! Conozco exactamente cuánto tienes. Pregúntame sobre tus deudas, tu disponible o pídemer un resumen.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-4 bg-white dark:bg-darkBg border-t border-gray-100 dark:border-gray-800 transition-colors">
-                    <div class="flex gap-2">
-                        <input type="text" id="chat-input" placeholder="Pregúntame algo..." class="w-full bg-gray-100 dark:bg-gray-800 dark:text-white border-none rounded-full px-5 py-3.5 text-sm focus:ring-2 focus:ring-coral outline-none font-medium">
-                        <button onclick="enviarAlBot()" class="w-12 h-12 bg-coral text-white rounded-full flex items-center justify-center shadow-md shadow-red-500/20 flex-shrink-0">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ================= VISTA 4: AJUSTES ================= -->
-            <div id="vista-ajustes" class="hidden pt-8 px-6 space-y-6">
-                <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Ajustes</h2>
-                <div class="flex items-center gap-4 bg-white dark:bg-darkCard p-4 rounded-3xl card-shadow border border-gray-50 dark:border-gray-800 transition-colors">
-                    <div class="w-14 h-14 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center text-2xl">👨🏻‍💻</div>
-                    <div>
-                        <p class="font-bold text-gray-900 dark:text-white">Mauricio</p>
-                        <p class="text-xs text-gray-500">Perfil Administrador</p>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-darkCard border border-gray-100 dark:border-gray-800 rounded-3xl p-2 card-shadow transition-colors">
-                    <!-- Toggle Dark Mode -->
-                    <button onclick="toggleDarkMode()" class="w-full text-left px-4 py-4 flex justify-between items-center text-gray-700 dark:text-gray-200 font-bold text-sm border-b border-gray-50 dark:border-gray-800">
-                        <div class="flex items-center gap-3"><span class="bg-gray-50 dark:bg-gray-800 p-2 rounded-xl">🌙</span> Modo Noche</div>
-                        <div id="indicador-dark" class="w-10 h-5 bg-gray-200 dark:bg-coral rounded-full relative transition-colors"><div class="w-4 h-4 bg-white rounded-full absolute top-0.5 left-1 dark:translate-x-5 transition-transform"></div></div>
-                    </button>
-                    <!-- Exportar Excel Funcional -->
-                    <button onclick="exportarExcel()" class="w-full text-left px-4 py-4 flex items-center gap-3 text-gray-700 dark:text-gray-200 font-bold text-sm border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                        <span class="bg-gray-50 dark:bg-gray-800 p-2 rounded-xl">📊</span> Exportar a Excel (.csv)
-                    </button>
-                    <!-- Notificaciones -->
-                    <button onclick="toggleNotificaciones(this)" class="w-full text-left px-4 py-4 flex items-center gap-3 text-gray-700 dark:text-gray-200 font-bold text-sm border-b border-gray-50 dark:border-gray-800">
-                        <span class="bg-gray-50 dark:bg-gray-800 p-2 rounded-xl">🔔</span> <span id="texto-noti">Activar Notificaciones</span>
-                    </button>
-                    
-                    <button onclick="limpiarTodo()" class="w-full text-left px-4 py-4 flex items-center gap-3 text-red-500 font-bold text-sm">
-                        <span class="bg-red-50 dark:bg-red-900/30 p-2 rounded-xl">🗑️</span> Borrar base de datos
-                    </button>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- ================= BOTÓN FLOTANTE (FAB) EXCLUSIVO DE HOME ================= -->
-        <div id="contenedor-fab" class="absolute bottom-24 right-6 z-40 flex flex-col items-end gap-3 transition-opacity">
-            <div id="menu-flotante" class="hidden flex-col items-end gap-2 mb-2">
-                <button onclick="abrirModal('hormiga')" class="flex items-center gap-3 bg-white dark:bg-darkCard px-4 py-2 rounded-full card-shadow text-sm font-bold text-gray-700 dark:text-gray-200 hover:text-coral">
-                    <span>Gasto Hormiga</span> <div class="w-8 h-8 bg-coral text-white rounded-full flex items-center justify-center text-lg">☕</div>
-                </button>
-                <button onclick="abrirModal('deuda')" class="flex items-center gap-3 bg-white dark:bg-darkCard px-4 py-2 rounded-full card-shadow text-sm font-bold text-gray-700 dark:text-gray-200 hover:text-purple-500">
-                    <span>Nueva Deuda</span> <div class="w-8 h-8 bg-soft-purple text-purple-900 rounded-full flex items-center justify-center text-lg">💸</div>
-                </button>
-                <button onclick="abrirModal('bolsillo')" class="flex items-center gap-3 bg-white dark:bg-darkCard px-4 py-2 rounded-full card-shadow text-sm font-bold text-gray-700 dark:text-gray-200 hover:text-yellow-600">
-                    <span>Nuevo Bolsillo</span> <div class="w-8 h-8 bg-soft-yellow text-yellow-900 rounded-full flex items-center justify-center text-lg">💰</div>
-                </button>
-            </div>
-            
-            <button onclick="toggleMenuFlotante()" id="btn-fab" class="w-14 h-14 bg-gray-900 dark:bg-coral text-white rounded-full flex items-center justify-center shadow-lg text-2xl transition-transform duration-300">
-                +
-            </button>
-        </div>
-
-        <!-- ================= MODAL GLOBAL ================= -->
-        <div id="modal-global" onclick="cerrarModalAfuera(event)" class="hidden fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-end justify-center transition-opacity">
-            <div onclick="event.stopPropagation()" class="bg-white dark:bg-darkBg w-full sm:max-w-[390px] rounded-t-[32px] p-6 pb-10 modal-shadow relative sm:border-x-[6px] border-gray-900 transition-colors">
-                <div onclick="cerrarModal()" class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6 cursor-pointer"></div>
-                
-                <h3 id="titulo-modal" class="text-xl font-extrabold text-gray-900 dark:text-white mb-5">Nuevo Registro</h3>
-                <input type="hidden" id="tipo-registro-actual">
-                
-                <div class="space-y-4">
-                    <div id="zona-fuente" class="hidden">
-                        <p class="text-xs font-bold text-gray-400 mb-2">¿De dónde salió el dinero?</p>
-                        <div id="botones-fuente" class="flex gap-2 overflow-x-auto pb-1 snap-x"></div>
-                        <input type="hidden" id="fuente-seleccionada">
-                    </div>
-
-                    <input type="text" id="input-nombre" placeholder="Concepto (Ej: Café)" class="w-full bg-gray-50 dark:bg-darkCard dark:text-white border border-gray-100 dark:border-gray-800 rounded-2xl px-4 py-4 font-medium focus:ring-2 focus:ring-coral outline-none">
-                    
-                    <div class="relative">
-                        <span class="absolute left-4 top-4 text-gray-400 font-bold">$</span>
-                        <input type="text" id="input-monto" placeholder="0" class="w-full bg-gray-50 dark:bg-darkCard dark:text-white border border-gray-100 dark:border-gray-800 rounded-2xl pl-8 pr-4 py-4 font-bold focus:ring-2 focus:ring-coral outline-none text-lg">
-                    </div>
-
-                    <div id="zona-fecha" class="hidden">
-                        <p class="text-xs font-bold text-gray-400 mb-2">Fecha asignada</p>
-                        <input type="date" id="input-fecha" class="w-full bg-gray-50 dark:bg-darkCard dark:text-white border border-gray-100 dark:border-gray-800 rounded-2xl px-4 py-4 font-medium outline-none color-scheme-dark">
-                    </div>
-                    
-                    <button onclick="guardarRegistro()" class="w-full bg-gray-900 dark:bg-coral text-white py-4 rounded-2xl text-sm font-bold shadow-lg">Guardar</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= BOTTOM NAVIGATION ================= -->
-        <div class="absolute bottom-0 w-full bg-white/95 dark:bg-darkBg/95 backdrop-blur-md pb-8 pt-4 px-8 flex justify-between border-t border-gray-100 dark:border-gray-800 z-30 sm:rounded-b-[34px] transition-colors">
-            <button onclick="cambiarVista('home', 'nav-home')" id="nav-home" class="flex flex-col items-center gap-1 text-coral">
-                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></svg>
-            </button>
-            <button onclick="cambiarVista('analisis', 'nav-analisis')" id="nav-analisis" class="flex flex-col items-center gap-1 text-gray-300 dark:text-gray-600">
-                <svg class="w-6 h-6 stroke-current" fill="none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-            </button>
-            <button onclick="cambiarVista('chat', 'nav-chat')" id="nav-chat" class="flex flex-col items-center gap-1 text-gray-300 dark:text-gray-600">
-                <svg class="w-6 h-6 stroke-current" fill="none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-            </button>
-            <button onclick="cambiarVista('ajustes', 'nav-ajustes')" id="nav-ajustes" class="flex flex-col items-center gap-1 text-gray-300 dark:text-gray-600">
-                <svg class="w-6 h-6 stroke-current" fill="none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            </button>
-        </div>
-
+  <header>
+    <h1>📋 Libreta de Pedidos</h1>
+    <div class="status-bar">
+      <span class="dot"></span>
+      <span id="last-update">Sincronizando...</span>
     </div>
+  </header>
 
-    <script>
-        // Inicialización base de datos con atributo de perfil
-        let db = JSON.parse(localStorage.getItem('finanzas_db_v3')) || {
-            bolsillos: [], deudas: [], hormigas: []
-        };
-        
-        let perfilActual = "Personal"; // "Personal" o "Test"
-        let fechaActualCalendario = new Date(); // Para Analysis
-        let fechaHomeVisual = new Date(); // Para el filtro del Home
-        let fechaSeleccionadaAnalisis = null; 
+  <div id="error-banner" class="error-msg"></div>
+  <div id="orders-container" class="grid"></div>
 
-        const nombresMesesArr = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-        const formatearPesos = (val) => "$" + Number(val).toLocaleString('es-CO');
+  <script>
+        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTyxLjfhAQe2tN0dj74gAuG9P3bSNEyn6T4VInk3dYvf-XxIyzR4SiV4MCcLyi6Qh7ujsZOWujl-j_I/pub?output=csv';
+
+    async function fetchOrders() {
+      const container = document.getElementById('orders-container');
+      const errorBanner = document.getElementById('error-banner');
+      
+      try {
+        const response = await fetch(`${SHEET_CSV_URL}&t=${Date.now()}`); // cache-buster
+        if (!response.ok) throw new Error("No se pudo conectar a Google Sheets");
         
-        // Auto-formato de input monto
-        document.getElementById("input-monto").addEventListener("input", function(e) {
-            let valorPuro = e.target.value.replace(/\D/g, "");
-            e.target.value = valorPuro ? Number(valorPuro).toLocaleString('es-CO') : "";
+        const csvText = await response.text();
+        const orders = parseCSV(csvText);
+        
+        errorBanner.style.display = 'none';
+        renderOrders(orders);
+        
+        document.getElementById('last-update').innerText = `Actualizado: ${new Date().toLocaleTimeString()}`;
+      } catch (error) {
+        console.error("Error al cargar pedidos:", error);
+        errorBanner.innerText = "⚠️ Error de conexión al cargar pedidos. Reintentando...";
+        errorBanner.style.display = 'block';
+      }
+    }
+
+    // Parser sencillo de CSV a Objetos JavaScript
+    function parseCSV(text) {
+      const lines = text.trim().split(/\r?\n/);
+      if (lines.length <= 1) return [];
+      
+      const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
+      
+      return lines.slice(1).map(line => {
+        const values = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+        let row = {};
+        headers.forEach((header, index) => {
+          row[header] = values[index] || '';
         });
+        return row;
+      });
+    }
 
-        // ================= PERFILES Y MODO OSCURO =================
-        function cambiarPerfil(perfil) {
-            perfilActual = perfil;
-            
-            let btnActivo = document.getElementById("btn-perf-" + perfil);
-            let btnInactivo = document.getElementById(perfil === "Personal" ? "btn-perf-Test" : "btn-perf-Personal");
-            
-            // Estilos visuales
-            btnActivo.className = "bg-coral text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-sm transition-all";
-            btnInactivo.className = "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 text-[11px] font-bold px-3 py-1 rounded-full transition-all";
-            
-            renderUI(); // Re-renderizar solo los datos del perfil activo
-        }
+    // Renderizar tarjetas en la pantalla
+    function renderOrders(orders) {
+      const container = document.getElementById('orders-container');
+      container.innerHTML = '';
 
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
-            let isDark = document.documentElement.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        }
+      if (orders.length === 0) {
+        container.innerHTML = '<div class="state-message">No hay pedidos registrados en la hoja de cálculo.</div>';
+        return;
+      }
 
-        // Cargar preferencias
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        }
+      orders.forEach(order => {
+        const estadoClean = (order.estado || 'pendiente').toLowerCase();
+        let badgeClass = 'badge-pendiente';
+        if (estadoClean.includes('proceso')) badgeClass = 'badge-proceso';
+        if (estadoClean.includes('entregado')) badgeClass = 'badge-entregado';
 
-        // ================= FILTROS Y LECTURA DE DATOS =================
-        // Extrae la data del DB actual filtrando por el perfil
-        function getDataPerfil() {
-            return {
-                bolsillos: db.bolsillos.filter(b => (b.perfil || 'Personal') === perfilActual),
-                deudas: db.deudas.filter(d => (d.perfil || 'Personal') === perfilActual),
-                hormigas: db.hormigas.filter(h => (h.perfil || 'Personal') === perfilActual)
-            };
-        }
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-header">
+            <span class="client-name">${order.cliente || 'Cliente Anónimo'}</span>
+            <span class="badge ${badgeClass}">${order.estado || 'Pendiente'}</span>
+          </div>
+          <div class="order-details">
+            ${order.pedido || 'Sin detalles de producto'}
+          </div>
+          <div class="card-footer">
+            <span>ID: #${order.id || '0'}</span>
+            <span>${order.fecha || ''}</span>
+            <strong>${order.total || ''}</strong>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
 
-        function cambiarMesHome(dir) {
-            fechaHomeVisual.setMonth(fechaHomeVisual.getMonth() + dir);
-            renderUI();
-        }
-
-        function calcularFinanzas() {
-            let data = getDataPerfil();
-            let mesFiltro = fechaHomeVisual.getMonth();
-            let anioFiltro = fechaHomeVisual.getFullYear();
-
-            // Filtrar hormigas y deudas SOLO por el mes visualizado en Home
-            let hormigasMes = data.hormigas.filter(h => {
-                let d = new Date(h.fecha + 'T00:00:00');
-                return d.getMonth() === mesFiltro && d.getFullYear() === anioFiltro;
-            });
-            
-            let deudasMes = data.deudas.filter(d => {
-                let d2 = new Date(d.fecha + 'T00:00:00');
-                return d2.getMonth() === mesFiltro && d2.getFullYear() === anioFiltro;
-            });
-
-            // Bolsillos siempre son el total disponible general
-            let totalBolsillos = data.bolsillos.reduce((acc, b) => acc + Number(b.monto), 0);
-            let totalHormigasMes = hormigasMes.reduce((acc, h) => acc + Number(h.monto), 0);
-            let totalDeudasMes = deudasMes.reduce((acc, d) => acc + Number(d.monto), 0);
-            
-            let hoy = new Date();
-            let montoCongelado = 0;
-            
-            // Revisar congelados (que venzan en los próximos 3 días) del mes actual visualizado
-            deudasMes.forEach(d => {
-                if(d.fecha) {
-                    let fechaDeuda = new Date(d.fecha + 'T00:00:00');
-                    let diffDias = Math.ceil((fechaDeuda - new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate())) / (1000 * 3600 * 24));
-                    
-                    if(diffDias >= 0 && diffDias <= 3) {
-                        montoCongelado += Number(d.monto);
-                        d.estado = 'congelado';
-                    } else {
-                        d.estado = 'pendiente';
-                    }
-                }
-            });
-
-            let totalHormigasGlobal = data.hormigas.reduce((acc, h) => acc + Number(h.monto), 0); // Para restar al total global disponible
-            let disponibleReal = (totalBolsillos - totalHormigasGlobal) - montoCongelado;
-            
-            document.getElementById("saldo-disponible").innerText = formatearPesos(disponibleReal);
-            
-            // Altura y montos de las gráficas
-            document.getElementById("monto-vis-1").innerText = formatearPesos(totalBolsillos);
-            document.getElementById("monto-vis-2").innerText = formatearPesos(totalHormigasMes);
-            document.getElementById("monto-vis-3").innerText = formatearPesos(totalDeudasMes);
-
-            let maxVal = Math.max(totalBolsillos, totalHormigasMes, totalDeudasMes, 1);
-            document.getElementById("barra-vis-1").style.height = Math.max(15, Math.min(90, (totalBolsillos / maxVal) * 85)) + "%";
-            document.getElementById("barra-vis-2").style.height = Math.max(15, Math.min(90, (totalHormigasMes / maxVal) * 85)) + "%";
-            document.getElementById("barra-vis-3").style.height = Math.max(15, Math.min(90, (totalDeudasMes / maxVal) * 85)) + "%";
-
-            const aviso = document.getElementById("aviso-congelado");
-            if(montoCongelado > 0) {
-                aviso.classList.remove("hidden");
-                document.getElementById("monto-congelado").innerText = formatearPesos(montoCongelado);
-            } else { aviso.classList.add("hidden"); }
-
-            return { hormigasMes, deudasMes };
-        }
-
-        function renderUI() {
-            document.getElementById("label-mes-home").innerText = `${nombresMesesArr[fechaHomeVisual.getMonth()]} ${fechaHomeVisual.getFullYear()}`;
-
-            let data = getDataPerfil();
-            let { hormigasMes, deudasMes } = calcularFinanzas();
-
-            // Bolsillos
-            const contBolsillos = document.getElementById("lista-bolsillos");
-            contBolsillos.innerHTML = data.bolsillos.length === 0 ? '<p class="text-xs text-gray-400 p-2">Sin bolsillos en este perfil</p>' : '';
-            data.bolsillos.forEach(b => {
-                contBolsillos.innerHTML += `
-                    <div class="min-w-[120px] bg-white dark:bg-darkCard border border-gray-100 dark:border-gray-800 rounded-2xl p-3 card-shadow snap-start">
-                        <div class="text-xl mb-1">${b.icono}</div>
-                        <h4 class="text-xs text-gray-500 font-bold truncate">${b.nombre}</h4>
-                        <p class="text-sm font-extrabold text-gray-900 dark:text-white">${formatearPesos(b.monto)}</p>
-                    </div>`;
-            });
-
-            // Deudas del mes seleccionado
-            const contDeudas = document.getElementById("lista-deudas");
-            contDeudas.innerHTML = deudasMes.length === 0 ? '<p class="text-xs text-gray-400">Todo al día en este mes</p>' : '';
-            deudasMes.forEach(d => {
-                let badge = d.estado === 'congelado' ? '<span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 text-[9px] px-2 py-0.5 rounded-full font-bold">PRÓXIMO</span>' : '';
-                contDeudas.innerHTML += `
-                    <div class="flex justify-between items-center bg-white dark:bg-darkCard p-3 rounded-2xl border border-gray-50 dark:border-gray-800 card-shadow">
-                        <div class="flex flex-col">
-                            <span class="text-sm font-bold text-gray-800 dark:text-white flex items-center gap-2">${d.nombre} ${badge}</span>
-                            <span class="text-[10px] text-gray-400">Vence: ${d.fecha || 'Sin fecha'}</span>
-                        </div>
-                        <span class="text-sm font-extrabold text-purple-600 dark:text-purple-400">-${formatearPesos(d.monto)}</span>
-                    </div>`;
-            });
-
-            renderizarHistorialHormigas(hormigasMes);
-            renderCalendarioMes();
-        }
-
-        function renderizarHistorialHormigas(hormigasMes) {
-            const contenedor = document.getElementById("contenedor-hormigas-dias");
-            contenedor.innerHTML = "";
-
-            if (hormigasMes.length === 0) {
-                contenedor.innerHTML = `<div class="bg-white dark:bg-darkCard border border-gray-100 dark:border-gray-800 rounded-3xl p-4 text-center text-xs text-gray-400 card-shadow">No hay gastos hormiga este mes.</div>`;
-                return;
-            }
-
-            let grupos = {};
-            hormigasMes.forEach(h => {
-                if(!grupos[h.fecha]) grupos[h.fecha] = [];
-                grupos[h.fecha].push(h);
-            });
-
-            let fechasOrdenadas = Object.keys(grupos).sort((a,b) => new Date(b) - new Date(a));
-
-            fechasOrdenadas.forEach((fecha, index) => {
-                let lista = grupos[fecha];
-                let totalDia = lista.reduce((acc, curr) => acc + curr.monto, 0);
-                let isOpen = index === 0 ? "open" : "";
-                let rotateClass = index === 0 ? "rotate-180" : "";
-
-                let htmlItems = lista.map(item => `
-                    <div class="flex justify-between items-center py-3 border-b border-gray-50 dark:border-gray-800 last:border-none">
-                        <div>
-                            <p class="text-sm font-bold text-gray-800 dark:text-gray-200">${item.nombre}</p>
-                            <p class="text-[10px] text-gray-400">${item.hora} • Origen: ${item.fuente}</p>
-                        </div>
-                        <span class="text-sm font-extrabold text-coral">-${formatearPesos(item.monto)}</span>
-                    </div>`).join('');
-
-                contenedor.innerHTML += `
-                    <div class="bg-white dark:bg-darkCard border border-gray-100 dark:border-gray-800 rounded-3xl card-shadow overflow-hidden">
-                        <button onclick="toggleAcordeonDia('${fecha}')" class="w-full p-4 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30 transition-colors">
-                            <div class="flex items-center gap-3">
-                                <span class="text-xl">☕</span>
-                                <div class="text-left">
-                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${fecha}</p>
-                                    <p class="text-xs text-gray-500 font-medium">Total: ${formatearPesos(totalDia)}</p>
-                                </div>
-                            </div>
-                            <svg id="ico-${fecha}" class="w-5 h-5 text-gray-400 transition-transform ${rotateClass}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
-                        <div id="acc-${fecha}" class="accordion-content ${isOpen} px-4">${htmlItems}</div>
-                    </div>`;
-            });
-        }
-
-        function toggleAcordeonDia(fecha) {
-            document.getElementById("acc-" + fecha).classList.toggle("open");
-            document.getElementById("ico-" + fecha).classList.toggle("rotate-180");
-        }
-
-        // ================= VISTA ANÁLISIS =================
-        function renderCalendarioMes() {
-            let anio = fechaActualCalendario.getFullYear();
-            let mes = fechaActualCalendario.getMonth();
-            document.getElementById("mes-anio-titulo").innerText = `${nombresMesesArr[mes]} ${anio}`;
-
-            let primerDiaIndex = new Date(anio, mes, 1).getDay();
-            primerDiaIndex = primerDiaIndex === 0 ? 6 : primerDiaIndex - 1;
-            let totalDiasMes = new Date(anio, mes + 1, 0).getDate();
-            
-            let grilla = document.getElementById("grilla-calendario");
-            grilla.innerHTML = "";
-            for(let i=0; i<primerDiaIndex; i++) grilla.innerHTML += `<div></div>`;
-
-            let hoyStr = new Date().toISOString().split('T')[0];
-
-            for(let dia=1; dia<=totalDiasMes; dia++) {
-                let fechaFormato = `${anio}-${String(mes+1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
-                let esHoy = fechaFormato === hoyStr ? "bg-coral text-white font-extrabold" : "hover:bg-gray-100 dark:hover:bg-gray-800";
-                
-                grilla.innerHTML += `<div onclick="seleccionarDiaCalendario('${fechaFormato}')" class="py-2 rounded-xl cursor-pointer transition-all ${esHoy}">${dia}</div>`;
-            }
-        }
-
-        function cambiarMes(dir) {
-            fechaActualCalendario.setMonth(fechaActualCalendario.getMonth() + dir);
-            renderCalendarioMes();
-        }
-
-        function seleccionarDiaCalendario(fechaStr) {
-            fechaSeleccionadaAnalisis = fechaStr;
-            document.getElementById("titulo-balance-dia").innerText = `Balance del ${fechaStr}`;
-            
-            let data = getDataPerfil();
-            let hormigasDia = data.hormigas.filter(h => h.fecha === fechaStr);
-            let totalHormigaDia = hormigasDia.reduce((acc, h) => acc + h.monto, 0);
-            
-            let deudasDia = data.deudas.filter(d => d.fecha === fechaStr);
-            let totalDeudaDia = deudasDia.reduce((acc, d) => acc + d.monto, 0);
-
-            let maxVal = Math.max(totalHormigaDia, totalDeudaDia, 1);
-
-            document.getElementById("barra-gastos-dia").style.height = Math.max(10, (totalHormigaDia/maxVal)*80) + "%";
-            document.getElementById("barra-ingresos-dia").style.height = Math.max(10, (totalDeudaDia/maxVal)*80) + "%";
-
-            document.getElementById("texto-recomendacion-dia").innerHTML = `🤖 En este día tienes <b>${formatearPesos(totalHormigaDia)}</b> en gastos y <b>${formatearPesos(totalDeudaDia)}</b> programados en vencimientos/deudas.`;
-            
-            // Mostrar el botón de añadir registro específico para este día
-            let btnAñadir = document.getElementById("btn-add-dia-especifico");
-            btnAñadir.classList.remove("hidden");
-            btnAñadir.innerText = `+ Añadir deuda el ${fechaStr}`;
-        }
-
-        function abrirModalDesdeAnalisis() {
-            if(!fechaSeleccionadaAnalisis) return;
-            abrirModal('deuda');
-            document.getElementById("input-fecha").value = fechaSeleccionadaAnalisis;
-        }
-
-        // ================= VISTAS GLOBALES =================
-        function cambiarVista(vista, navId) {
-            ['home', 'analisis', 'chat', 'ajustes'].forEach(v => document.getElementById("vista-" + v).classList.add("hidden"));
-            document.getElementById("vista-" + vista).classList.remove("hidden");
-
-            // Ocultar FAB si no es Home
-            document.getElementById("contenedor-fab").style.display = vista === 'home' ? 'flex' : 'none';
-
-            ['nav-home', 'nav-analisis', 'nav-chat', 'nav-ajustes'].forEach(id => {
-                let btn = document.getElementById(id);
-                btn.classList.remove("text-coral");
-                btn.classList.add("text-gray-300", "dark:text-gray-600");
-                if(id === navId) {
-                    btn.classList.remove("text-gray-300", "dark:text-gray-600");
-                    btn.classList.add("text-coral");
-                }
-            });
-        }
-
-        // ================= MODAL Y REGISTRO =================
-        function toggleMenuFlotante() {
-            const menu = document.getElementById("menu-flotante");
-            const btn = document.getElementById("btn-fab");
-            menu.classList.toggle("hidden");
-            menu.classList.toggle("flex");
-            btn.classList.toggle("rotate-45");
-        }
-
-        function abrirModal(tipo) {
-            // Cierra el menú flotante si está abierto
-            document.getElementById("menu-flotante").classList.add("hidden");
-            document.getElementById("menu-flotante").classList.remove("flex");
-            document.getElementById("btn-fab").classList.remove("rotate-45");
-
-            document.getElementById("modal-global").classList.remove("hidden");
-            document.getElementById("tipo-registro-actual").value = tipo;
-            
-            document.getElementById("input-nombre").value = "";
-            document.getElementById("input-monto").value = "";
-            document.getElementById("input-fecha").value = new Date().toISOString().split('T')[0];
-            document.getElementById("fuente-seleccionada").value = "";
-            
-            const zonaFecha = document.getElementById("zona-fecha");
-            const zonaFuente = document.getElementById("zona-fuente");
-            const titulo = document.getElementById("titulo-modal");
-
-            zonaFecha.classList.add("hidden");
-            zonaFuente.classList.add("hidden");
-
-            if(tipo === 'bolsillo') {
-                titulo.innerText = "Crear Bolsillo (" + perfilActual + ")";
-                zonaFecha.classList.remove("hidden"); // Para tener la fecha de creación opcional
-            } else if(tipo === 'deuda') {
-                titulo.innerText = "Añadir Deuda / Programar";
-                zonaFecha.classList.remove("hidden");
-            } else if(tipo === 'hormiga') {
-                titulo.innerText = "Gasto Hormiga (Rápido)";
-                zonaFuente.classList.remove("hidden");
-                zonaFecha.classList.remove("hidden"); // Ahora permite cambiar fecha
-                
-                const contBotones = document.getElementById("botones-fuente");
-                contBotones.innerHTML = "";
-                let misBolsillos = getDataPerfil().bolsillos;
-                
-                if(misBolsillos.length === 0) contBotones.innerHTML = "<span class='text-xs text-red-400'>Crea un bolsillo primero</span>";
-                
-                misBolsillos.forEach(b => {
-                    let btn = document.createElement("button");
-                    btn.className = "whitespace-nowrap bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-4 py-2 rounded-xl text-xs font-bold snap-start";
-                    btn.innerText = b.nombre;
-                    btn.onclick = (e) => {
-                        Array.from(contBotones.children).forEach(c => {
-                            c.classList.remove("bg-gray-800", "text-white", "dark:bg-coral");
-                            c.classList.add("bg-gray-100", "dark:bg-gray-800", "text-gray-600", "dark:text-gray-300");
-                        });
-                        e.target.classList.remove("bg-gray-100", "dark:bg-gray-800", "text-gray-600", "dark:text-gray-300");
-                        e.target.classList.add("bg-gray-800", "text-white", "dark:bg-coral");
-                        document.getElementById("fuente-seleccionada").value = b.nombre;
-                    };
-                    contBotones.appendChild(btn);
-                });
-            }
-        }
-
-        function cerrarModal() {
-            document.getElementById("modal-global").classList.add("hidden");
-        }
-        function cerrarModalAfuera(event) { if (event.target.id === "modal-global") cerrarModal(); }
-
-        function guardarRegistro() {
-            let tipo = document.getElementById("tipo-registro-actual").value;
-            let nombre = document.getElementById("input-nombre").value.trim();
-            let montoPuro = document.getElementById("input-monto").value.replace(/\./g, "");
-            let fechaIngresada = document.getElementById("input-fecha").value;
-            
-            if(!nombre || montoPuro === "") return alert("Faltan el nombre o el monto.");
-
-            let registro = {
-                id: Date.now(),
-                perfil: perfilActual, // Vinculado al perfil ("Personal" o "Test")
-                nombre,
-                monto: Number(montoPuro),
-                fecha: fechaIngresada || new Date().toISOString().split('T')[0]
-            };
-
-            if(tipo === 'bolsillo') {
-                const iconos = ['💰', '🏦', '💳', '🐖', '💵'];
-                registro.icono = iconos[Math.floor(Math.random() * iconos.length)];
-                db.bolsillos.push(registro);
-            } 
-            else if(tipo === 'deuda') {
-                db.deudas.push(registro);
-            } 
-            else if(tipo === 'hormiga') {
-                let fuente = document.getElementById("fuente-seleccionada").value;
-                if(getDataPerfil().bolsillos.length > 0 && !fuente) return alert("Selecciona de qué bolsillo salió el dinero");
-                registro.fuente = fuente || "General";
-                
-                let fechaObj = new Date();
-                registro.hora = fechaObj.getHours() + ":" + (fechaObj.getMinutes()<10?'0':'') + fechaObj.getMinutes();
-                db.hormigas.push(registro);
-            }
-
-            localStorage.setItem('finanzas_db_v3', JSON.stringify(db));
-            renderUI();
-            if(fechaSeleccionadaAnalisis) seleccionarDiaCalendario(fechaSeleccionadaAnalisis); // Actualiza gráfico de analysis
-            cerrarModal();
-        }
-
-        // ================= BOT IA CONECTADO A DB =================
-        function enviarAlBot() {
-            const input = document.getElementById("chat-input");
-            const chatBox = document.getElementById("chat-box");
-            let texto = input.value.trim();
-            if (!texto) return;
-
-            chatBox.innerHTML += `
-                <div class="flex gap-3 justify-end">
-                    <div class="bg-gray-900 dark:bg-coral text-white p-3.5 rounded-2xl rounded-tr-none card-shadow text-sm max-w-[85%]">
-                        ${texto}
-                    </div>
-                </div>`;
-            input.value = "";
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            setTimeout(() => {
-                let data = getDataPerfil();
-                let totalBolsillos = data.bolsillos.reduce((acc, b) => acc + b.monto, 0);
-                let totalHormigas = data.hormigas.reduce((acc, h) => acc + h.monto, 0);
-                let totalDeudas = data.deudas.reduce((acc, d) => acc + d.monto, 0);
-                let disponible = totalBolsillos - totalHormigas;
-
-                let respuestaIA = "";
-                let t = texto.toLowerCase();
-
-                if(t.includes("hola") || t.includes("resumen")) {
-                    respuestaIA = `¡Hola Mauricio! Revisando tu perfil "${perfilActual}": Tienes ${formatearPesos(totalBolsillos)} en tus cuentas, has gastado ${formatearPesos(totalHormigas)} en hormigas, y tienes ${formatearPesos(totalDeudas)} programados en deudas.`;
-                } else if(t.includes("deuda") || t.includes("debo")) {
-                    respuestaIA = data.deudas.length > 0 
-                        ? `Tienes un total de ${formatearPesos(totalDeudas)} en deudas. La más reciente que veo es "${data.deudas[data.deudas.length-1].nombre}".`
-                        : `¡Excelentes noticias! No tienes deudas registradas en este perfil.`;
-                } else if(t.includes("alcanza") || t.includes("disponible") || t.includes("tengo")) {
-                    respuestaIA = `Restando tus gastos hormiga a tus bolsillos, tu liquidez actual es de ${formatearPesos(disponible)}. ${disponible < totalDeudas ? 'Ojo, es menor a tus deudas programadas.' : 'Cubre perfectamente tus deudas programadas.'}`;
-                } else {
-                    respuestaIA = `Analizado. Recuerda que siempre evalúo basándome en tus fondos reales. Actualmente tienes ${formatearPesos(disponible)} libres de gastos hormiga en este perfil. ¿Quieres que registre algo nuevo?`;
-                }
-
-                chatBox.innerHTML += `
-                    <div class="flex gap-3 mt-4">
-                        <div class="w-8 h-8 rounded-full bg-gray-900 dark:bg-gray-700 text-white flex items-center justify-center text-sm shadow-sm flex-shrink-0">🤖</div>
-                        <div class="bg-white dark:bg-darkCard dark:text-gray-200 p-3.5 rounded-2xl rounded-tl-none card-shadow text-sm text-gray-700 max-w-[85%] leading-relaxed">
-                            ${respuestaIA}
-                        </div>
-                    </div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 700);
-        }
-
-        // ================= AJUSTES FUNCIONALES =================
-        function exportarExcel() {
-            let data = getDataPerfil();
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Tipo,Perfil,Nombre,Monto,Fecha,Detalle_Adicional\n";
-            
-            data.bolsillos.forEach(b => csvContent += `Bolsillo,${b.perfil},${b.nombre},${b.monto},${b.fecha},${b.icono}\n`);
-            data.deudas.forEach(d => csvContent += `Deuda,${d.perfil},${d.nombre},${d.monto},${d.fecha},${d.estado || ''}\n`);
-            data.hormigas.forEach(h => csvContent += `Gasto Hormiga,${h.perfil},${h.nombre},${h.monto},${h.fecha},Origen:${h.fuente}\n`);
-            
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Finanzas_${perfilActual}_Mauricio.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function toggleNotificaciones(btn) {
-            let texto = document.getElementById("texto-noti");
-            if(texto.innerText.includes("Activar")) {
-                alert("🔔 Has habilitado las notificaciones. Te avisaremos 1 día antes del vencimiento de tus deudas programadas.");
-                texto.innerText = "Notificaciones: Activadas";
-                btn.classList.add("text-coral");
-            } else {
-                texto.innerText = "Activar Notificaciones";
-                btn.classList.remove("text-coral");
-            }
-        }
-
-        function limpiarTodo() {
-            if(confirm(`¿Seguro que deseas eliminar TODOS los datos del perfil ${perfilActual}?`)) {
-                // Filtramos la DB para guardar solo lo que NO es de este perfil
-                db.bolsillos = db.bolsillos.filter(x => x.perfil !== perfilActual);
-                db.deudas = db.deudas.filter(x => x.perfil !== perfilActual);
-                db.hormigas = db.hormigas.filter(x => x.perfil !== perfilActual);
-                
-                localStorage.setItem('finanzas_db_v3', JSON.stringify(db));
-                renderUI();
-                alert("Base de datos limpia.");
-            }
-        }
-
-        window.onload = () => {
-            cambiarPerfil("Personal"); // Inicia forzando el renderUI general
-        };
-    </script>
+    // Cargar al inicio y refrescar cada 10 segundos
+    fetchOrders();
+    setInterval(fetchOrders, 10000);
+  </script>
 </body>
 </html>
