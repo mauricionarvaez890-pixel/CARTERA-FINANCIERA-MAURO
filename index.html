@@ -13,7 +13,7 @@
     .status-bar { font-size: 0.85rem; color: #94a3b8; display: flex; align-items: center; gap: 8px; background: #1e293b; padding: 6px 12px; border-radius: 20px; }
     .dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #22c55e; }
 
-    /* Seccion de Filtros */
+    /* Filtros */
     .filter-container { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; background-color: #131f37; padding: 12px 16px; border-radius: 12px; border: 1px solid #1e293b; }
     .filter-label { font-size: 0.9rem; font-weight: 600; color: #94a3b8; display: flex; align-items: center; gap: 6px; }
     .filter-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -21,46 +21,46 @@
     .filter-btn:hover { border-color: #38bdf8; color: #ffffff; }
     .filter-btn.active { background-color: #38bdf8; color: #0b1329; border-color: #38bdf8; font-weight: 800; }
     
-    /* Colores especificos para filtros activos */
     .filter-btn.btn-pendiente.active { background-color: #ef4444; color: #ffffff; border-color: #ef4444; }
     .filter-btn.btn-aprobado.active { background-color: #22c55e; color: #ffffff; border-color: #22c55e; }
     .filter-btn.btn-proceso.active { background-color: #f59e0b; color: #ffffff; border-color: #f59e0b; }
 
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 18px; }
     
-    /* Tarjetas de Pedidos */
+    /* Tarjetas */
     .card { background-color: #131f37; border: 1px solid #1e293b; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 12px; transition: all 0.2s ease-in-out; cursor: pointer; position: relative; }
     .card:hover { transform: translateY(-3px); border-color: #38bdf850; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
     
     .card-header { display: flex; justify-content: space-between; align-items: center; }
     .client-name { font-weight: 700; font-size: 1.15rem; color: #ffffff; letter-spacing: 0.3px; display: flex; align-items: center; gap: 6px; }
     
-    /* Badges / Estados con Colores Solicitados */
     .badge { padding: 5px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-    
-    /* 🔴 Rojo - Pendiente */
     .badge-pendiente { background-color: #ef444420; color: #f87171; border: 1px solid #ef4444; }
-    /* 🟢 Verde - Aprobado */
     .badge-aprobado { background-color: #22c55e20; color: #4ade80; border: 1px solid #22c55e; }
-    /* 🟠 Naranja - Saliendo / En Proceso */
     .badge-proceso { background-color: #f59e0b20; color: #fbbf24; border: 1px solid #f59e0b; }
-    /* ⚪ Neutro - Otros */
     .badge-neutro { background-color: #64748b20; color: #cbd5e1; border: 1px solid #64748b; }
     
     .order-details { font-size: 0.95rem; color: #cbd5e1; background-color: #0b1329a0; padding: 12px; border-radius: 8px; border: 1px solid #1e293b; font-weight: 500; }
     .card-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #64748b; margin-top: 4px; }
     .price-tag { font-size: 1rem; font-weight: 700; color: #38bdf8; }
 
+    /* Botones de Cambio Rápido de Estado */
+    .action-buttons { display: flex; gap: 6px; margin-top: 8px; border-top: 1px solid #1e293b; padding-top: 10px; }
+    .act-btn { flex: 1; padding: 6px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; border: none; cursor: pointer; transition: opacity 0.2s; color: #fff; }
+    .act-btn:hover { opacity: 0.85; }
+    .act-btn-pendiente { background-color: #ef4444; }
+    .act-btn-aprobado { background-color: #22c55e; }
+    .act-btn-despachado { background-color: #f59e0b; }
+
     .state-message { text-align: center; padding: 50px; color: #64748b; font-size: 1.1rem; grid-column: 1 / -1; }
     .error-msg { color: #f87171; background-color: #450a0a; padding: 14px; border-radius: 8px; margin-bottom: 20px; display: none; border: 1px solid #ef4444; font-size: 0.95rem; line-height: 1.4; }
 
-    /* Modal de Detalles */
+    /* Modal */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000; }
     .modal-card { background: #131f37; border: 1px solid #38bdf880; border-radius: 16px; width: 90%; max-width: 450px; padding: 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
     .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 12px; }
     .modal-title { font-size: 1.3rem; color: #38bdf8; font-weight: bold; }
     .close-btn { background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; line-height: 1; }
-    .close-btn:hover { color: #ffffff; }
     .modal-body p { margin-bottom: 10px; font-size: 0.95rem; color: #cbd5e1; }
     .modal-body strong { color: #ffffff; }
   </style>
@@ -75,7 +75,6 @@
     </div>
   </header>
 
-  <!-- Filtro por Estado -->
   <div class="filter-container">
     <span class="filter-label">⚙️ Filtros:</span>
     <div class="filter-buttons">
@@ -101,47 +100,43 @@
   </div>
 
   <script>
-    // Enlace de Google Sheets convertido correctamente a output=csv
     const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTyxLjfhAQe2tN0dj74gAuG9P3bSNEyn6T4VInk3dYvf-XxIyzR4SiV4MCcLyi6Qh7ujsZOWujl-j_I/pub?output=csv';
+    const SCRIPT_API_URL = 'https://script.google.com/macros/s/AKfycbxnHNw_VApwTPRFwAfhm-jUtD8wxWiVWVNhOpLaQqlTimlDoZsM3WDY6P0a1XCqcaoD/exec';
 
     let rawOrders = [];
+    let localStateOverrides = JSON.parse(localStorage.getItem('localStateOverrides') || '{}');
     let currentFilter = 'TODOS';
-    let currentHTMLCache = "";
 
     async function fetchOrders() {
       const errorBanner = document.getElementById('error-banner');
       
       try {
-        if (!SHEET_CSV_URL || SHEET_CSV_URL.includes('TU_ENLACE')) {
-          throw new Error("La URL de Google Sheets no está configurada correctamente.");
-        }
-
         const urlFinal = SHEET_CSV_URL + (SHEET_CSV_URL.includes('?') ? '&' : '?') + `t=${Date.now()}`;
         const response = await fetch(urlFinal);
         
-        if (!response.ok) {
-          throw new Error(`Google Sheets bloqueó la conexión (Error HTTP ${response.status}). Verifica la publicación web.`);
-        }
+        if (!response.ok) throw new Error("Error al conectar con Google Sheets.");
         
         const csvText = await response.text();
+        const parsed = parseCSV(csvText);
         
-        if (csvText.trim().startsWith('<!DOCTYPE') || csvText.trim().startsWith('<html')) {
-          throw new Error("Google requiere iniciar sesión. En tu hoja ve a Archivo > Compartir > Publicar en la web y desmarca 'Exigir inicio de sesión'.");
-        }
+        // Aplicar anulaciones de estado locales para respuesta instantánea
+        rawOrders = parsed.map(order => {
+          if (localStateOverrides[order.id]) {
+            order.estado = localStateOverrides[order.id];
+          }
+          return order;
+        });
 
-        rawOrders = parseCSV(csvText);
         errorBanner.style.display = 'none';
-        
         renderOrders();
         document.getElementById('last-update').innerText = `Actualizado: ${new Date().toLocaleTimeString('es-CO')}`;
       } catch (error) {
-        console.error("Error al cargar pedidos:", error);
+        console.error(error);
         errorBanner.innerText = `⚠️ ${error.message}`;
         errorBanner.style.display = 'block';
       }
     }
 
-    // Parser CSV tolerante a comas en precios
     function parseCSV(text) {
       const lines = text.trim().split(/\r?\n/);
       if (lines.length <= 1) return [];
@@ -152,14 +147,9 @@
         let inQuotes = false;
         for (let i = 0; i < line.length; i++) {
           const char = line[i];
-          if (char === '"') {
-            inQuotes = !inQuotes;
-          } else if (char === ',' && !inQuotes) {
-            values.push(current.trim());
-            current = '';
-          } else {
-            current += char;
-          }
+          if (char === '"') inQuotes = !inQuotes;
+          else if (char === ',' && !inQuotes) { values.push(current.trim()); current = ''; }
+          else current += char;
         }
         values.push(current.trim());
         return values.map(v => v.replace(/^"|"$/g, '').trim());
@@ -171,14 +161,11 @@
         if (!line.trim()) return null;
         const values = parseLine(line);
         let row = {};
-        headers.forEach((header, index) => {
-          row[header] = values[index] || '';
-        });
+        headers.forEach((header, index) => { row[header] = values[index] || ''; });
         return row;
       }).filter(Boolean);
     }
 
-    // Formatear precio a Pesos Colombianos (COP)
     function formatCOP(val) {
       if (!val) return '$0 COP';
       const cleanNum = parseInt(val.replace(/[^0-9]/g, ''), 10);
@@ -186,7 +173,6 @@
       return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(cleanNum);
     }
 
-    // Filtros por Estado
     function setFilter(filter) {
       currentFilter = filter;
       document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -195,7 +181,31 @@
       renderOrders();
     }
 
-    // Renderizado de tarjetas con filtro activo y emoji de persona
+    // Actualiza el estado local de inmediato y envía la petición a Google Sheets
+    async function changeOrderStatus(event, orderId, nuevoEstado) {
+      event.stopPropagation(); // Evita abrir el modal al presionar el botón
+
+      // 1. Guardar localmente para cero latencia visual
+      localStateOverrides[orderId] = nuevoEstado;
+      localStorage.setItem('localStateOverrides', JSON.stringify(localStateOverrides));
+
+      rawOrders = rawOrders.map(o => {
+        if (String(o.id) === String(orderId)) o.estado = nuevoEstado;
+        return o;
+      });
+
+      renderOrders();
+
+      // 2. Enviar a Google Sheets en segundo plano
+      if (SCRIPT_API_URL) {
+        try {
+          await fetch(`${SCRIPT_API_URL}?id=${encodeURIComponent(orderId)}&estado=${encodeURIComponent(nuevoEstado)}`, { mode: 'no-cors' });
+        } catch (err) {
+          console.error("Error enviando actualización a Google Sheets", err);
+        }
+      }
+    }
+
     function renderOrders() {
       const container = document.getElementById('orders-container');
 
@@ -209,7 +219,6 @@
 
       if (filteredOrders.length === 0) {
         container.innerHTML = `<div class="state-message">No hay encargo en estado "${currentFilter}" en este momento.</div>`;
-        currentHTMLCache = "";
         return;
       }
 
@@ -223,8 +232,6 @@
         else if (estadoClean.includes('aprobado') || estadoClean.includes('confirmado')) badgeClass = 'badge-aprobado';
         else if (estadoClean.includes('proceso') || estadoClean.includes('saliendo') || estadoClean.includes('despachado')) badgeClass = 'badge-proceso';
 
-        const precioCOP = formatCOP(order.total);
-
         newHTML += `
           <div class="card" onclick="openModal('${encodeURIComponent(JSON.stringify(order))}')">
             <div class="card-header">
@@ -236,19 +243,22 @@
             </div>
             <div class="card-footer">
               <span>ID: #${order.id || '0'} | ${order.fecha || ''}</span>
-              <span class="price-tag">${precioCOP}</span>
+              <span class="price-tag">${formatCOP(order.total)}</span>
+            </div>
+
+            <!-- Botones de Acción Directos -->
+            <div class="action-buttons">
+              <button class="act-btn act-btn-pendiente" onclick="changeOrderStatus(event, '${order.id}', 'PENDIENTE')">🔴 Pendiente</button>
+              <button class="act-btn act-btn-aprobado" onclick="changeOrderStatus(event, '${order.id}', 'APROBADO')">🟢 Aceptar</button>
+              <button class="act-btn act-btn-despachado" onclick="changeOrderStatus(event, '${order.id}', 'DESPACHADO')">🟠 Despachar</button>
             </div>
           </div>
         `;
       });
 
-      if (currentHTMLCache !== newHTML) {
-        currentHTMLCache = newHTML;
-        container.innerHTML = newHTML;
-      }
+      container.innerHTML = newHTML;
     }
 
-    // Modal de Detalles
     function openModal(jsonEncodedOrder) {
       const order = JSON.parse(decodeURIComponent(jsonEncodedOrder));
       const modalContent = document.getElementById('modal-content');
@@ -269,7 +279,6 @@
       document.getElementById('modal-overlay').style.display = 'none';
     }
 
-    // Inicio y auto-sincronización cada 10s
     fetchOrders();
     setInterval(fetchOrders, 10000);
   </script>
