@@ -6,63 +6,67 @@
   <title>Ficha de encargo - Dashboard 24/7</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background-color: #0b1329; color: #f8fafc; padding: 20px; }
+    body { background-color: #0b1329; color: #f8fafc; padding: 16px; }
     
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #1e293b; padding-bottom: 15px; flex-wrap: wrap; gap: 10px; }
-    h1 { font-size: 1.6rem; color: #38bdf8; display: flex; align-items: center; gap: 10px; }
-    .status-bar { font-size: 0.85rem; color: #94a3b8; display: flex; align-items: center; gap: 8px; background: #1e293b; padding: 6px 12px; border-radius: 20px; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #1e293b; padding-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+    h1 { font-size: 1.4rem; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
+    .status-bar { font-size: 0.8rem; color: #94a3b8; display: flex; align-items: center; gap: 6px; background: #1e293b; padding: 5px 10px; border-radius: 20px; }
     .dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #22c55e; }
 
-    /* Filtros */
-    .filter-container { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; background-color: #131f37; padding: 12px 16px; border-radius: 12px; border: 1px solid #1e293b; }
-    .filter-label { font-size: 0.9rem; font-weight: 600; color: #94a3b8; display: flex; align-items: center; gap: 6px; }
-    .filter-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
-    .filter-btn { background-color: #0b1329; color: #cbd5e1; border: 1px solid #334155; padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-    .filter-btn:hover { border-color: #38bdf8; color: #ffffff; }
-    .filter-btn.active { background-color: #38bdf8; color: #0b1329; border-color: #38bdf8; font-weight: 800; }
-    
-    .filter-btn.btn-pendiente.active { background-color: #ef4444; color: #ffffff; border-color: #ef4444; }
-    .filter-btn.btn-aprobado.active { background-color: #22c55e; color: #ffffff; border-color: #22c55e; }
-    .filter-btn.btn-proceso.active { background-color: #f59e0b; color: #ffffff; border-color: #f59e0b; }
+    /* Recuadro Compacto de Cierre / Contadores */
+    .metrics-panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 15px; background: #131f37; padding: 12px; border-radius: 10px; border: 1px solid #1e293b; }
+    .metric-card { background: #0b1329; padding: 10px; border-radius: 8px; border: 1px solid #1e293b; text-align: center; }
+    .metric-title { font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+    .metric-value { font-size: 1.3rem; font-weight: 800; color: #38bdf8; }
+    .metric-value.green { color: #4ade80; }
 
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 18px; }
+    /* Selector de Fecha para Cierre del Día */
+    .date-picker-wrapper { display: flex; align-items: center; gap: 8px; justify-content: flex-end; margin-bottom: 12px; }
+    .date-picker-wrapper label { font-size: 0.8rem; color: #94a3b8; font-weight: 600; }
+    .date-picker-wrapper input { background: #131f37; border: 1px solid #334155; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 0.82rem; outline: none; }
+
+    /* Filtros de Estado */
+    .filter-container { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; background-color: #131f37; padding: 10px 12px; border-radius: 10px; border: 1px solid #1e293b; }
+    .filter-label { font-size: 0.82rem; font-weight: 600; color: #94a3b8; }
+    .filter-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter-btn { background-color: #0b1329; color: #cbd5e1; border: 1px solid #334155; padding: 5px 12px; border-radius: 16px; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
+    .filter-btn.active { background-color: #38bdf8; color: #0b1329; border-color: #38bdf8; font-weight: 800; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
     
     /* Tarjetas */
-    .card { background-color: #131f37; border: 1px solid #1e293b; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 12px; transition: all 0.2s ease-in-out; cursor: pointer; position: relative; }
-    .card:hover { transform: translateY(-3px); border-color: #38bdf850; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-    
+    .card { background-color: #131f37; border: 1px solid #1e293b; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; cursor: pointer; position: relative; }
     .card-header { display: flex; justify-content: space-between; align-items: center; }
-    .client-name { font-weight: 700; font-size: 1.15rem; color: #ffffff; letter-spacing: 0.3px; display: flex; align-items: center; gap: 6px; }
+    .client-name { font-weight: 700; font-size: 1rem; color: #ffffff; }
     
-    .badge { padding: 5px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; }
     .badge-pendiente { background-color: #ef444420; color: #f87171; border: 1px solid #ef4444; }
     .badge-aprobado { background-color: #22c55e20; color: #4ade80; border: 1px solid #22c55e; }
     .badge-proceso { background-color: #f59e0b20; color: #fbbf24; border: 1px solid #f59e0b; }
     .badge-neutro { background-color: #64748b20; color: #cbd5e1; border: 1px solid #64748b; }
     
-    .order-details { font-size: 0.95rem; color: #cbd5e1; background-color: #0b1329a0; padding: 12px; border-radius: 8px; border: 1px solid #1e293b; font-weight: 500; }
-    .card-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #64748b; margin-top: 4px; }
-    .price-tag { font-size: 1rem; font-weight: 700; color: #38bdf8; }
+    .order-details { font-size: 0.88rem; color: #cbd5e1; background-color: #0b1329a0; padding: 10px; border-radius: 6px; border: 1px solid #1e293b; }
+    .address-text { font-size: 0.78rem; color: #38bdf8; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+    .card-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: #64748b; }
+    .price-tag { font-size: 0.95rem; font-weight: 700; color: #38bdf8; }
 
     /* Botones de Cambio Rápido de Estado */
-    .action-buttons { display: flex; gap: 6px; margin-top: 8px; border-top: 1px solid #1e293b; padding-top: 10px; }
-    .act-btn { flex: 1; padding: 6px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; border: none; cursor: pointer; transition: opacity 0.2s; color: #fff; }
-    .act-btn:hover { opacity: 0.85; }
+    .action-buttons { display: flex; gap: 6px; border-top: 1px solid #1e293b; padding-top: 8px; }
+    .act-btn { flex: 1; padding: 5px; border-radius: 5px; font-size: 0.72rem; font-weight: 700; border: none; cursor: pointer; color: #fff; }
     .act-btn-pendiente { background-color: #ef4444; }
     .act-btn-aprobado { background-color: #22c55e; }
     .act-btn-despachado { background-color: #f59e0b; }
 
-    .state-message { text-align: center; padding: 50px; color: #64748b; font-size: 1.1rem; grid-column: 1 / -1; }
-    .error-msg { color: #f87171; background-color: #450a0a; padding: 14px; border-radius: 8px; margin-bottom: 20px; display: none; border: 1px solid #ef4444; font-size: 0.95rem; line-height: 1.4; }
+    .state-message { text-align: center; padding: 40px; color: #64748b; font-size: 1rem; grid-column: 1 / -1; }
+    .error-msg { color: #f87171; background-color: #450a0a; padding: 10px; border-radius: 6px; margin-bottom: 15px; display: none; border: 1px solid #ef4444; font-size: 0.85rem; }
 
     /* Modal */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000; }
-    .modal-card { background: #131f37; border: 1px solid #38bdf880; border-radius: 16px; width: 90%; max-width: 450px; padding: 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 12px; }
-    .modal-title { font-size: 1.3rem; color: #38bdf8; font-weight: bold; }
-    .close-btn { background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; line-height: 1; }
-    .modal-body p { margin-bottom: 10px; font-size: 0.95rem; color: #cbd5e1; }
-    .modal-body strong { color: #ffffff; }
+    .modal-card { background: #131f37; border: 1px solid #38bdf880; border-radius: 12px; width: 90%; max-width: 400px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 8px; }
+    .modal-title { font-size: 1.1rem; color: #38bdf8; font-weight: bold; }
+    .close-btn { background: none; border: none; color: #94a3b8; font-size: 1.3rem; cursor: pointer; }
+    .modal-body p { margin-bottom: 8px; font-size: 0.88rem; color: #cbd5e1; }
   </style>
 </head>
 <body>
@@ -71,24 +75,48 @@
     <h1>📝 Ficha de encargo</h1>
     <div class="status-bar">
       <span class="dot"></span>
-      <span id="last-update">Sincronizando...</span>
+      <span id="last-update">Cargando...</span>
     </div>
   </header>
 
+  <!-- Filtro de Fecha (Cierre del día) -->
+  <div class="date-picker-wrapper">
+    <label for="filter-date">📅 Cierre por Fecha:</label>
+    <input type="date" id="filter-date" onchange="renderDashboard()">
+    <button class="filter-btn" onclick="clearDateFilter()">Ver Todos</button>
+  </div>
+
+  <!-- Panel Compacto de Resumen -->
+  <div class="metrics-panel">
+    <div class="metric-card">
+      <div class="metric-title">Pedidos Vendidos</div>
+      <div class="metric-value green" id="metric-total-vendidos">0</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Pendientes</div>
+      <div class="metric-value" id="metric-total-pendientes">0</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Recaudado Hoy</div>
+      <div class="metric-value" id="metric-monto-total">$0</div>
+    </div>
+  </div>
+
+  <!-- Filtros por Estado -->
   <div class="filter-container">
-    <span class="filter-label">⚙️ Filtros:</span>
+    <span class="filter-label">Estado:</span>
     <div class="filter-buttons">
       <button class="filter-btn active" id="btn-TODOS" onclick="setFilter('TODOS')">Todos</button>
-      <button class="filter-btn btn-pendiente" id="btn-PENDIENTE" onclick="setFilter('PENDIENTE')">🔴 Pendientes</button>
-      <button class="filter-btn btn-aprobado" id="btn-APROBADO" onclick="setFilter('APROBADO')">🟢 Aprobados</button>
-      <button class="filter-btn btn-proceso" id="btn-PROCESO" onclick="setFilter('PROCESO')">🟠 Saliendo / Despachado</button>
+      <button class="filter-btn" id="btn-PENDIENTE" onclick="setFilter('PENDIENTE')">🔴 Pendientes</button>
+      <button class="filter-btn" id="btn-APROBADO" onclick="setFilter('APROBADO')">🟢 Aprobados</button>
+      <button class="filter-btn" id="btn-PROCESO" onclick="setFilter('PROCESO')">🟠 Despachados</button>
     </div>
   </div>
 
   <div id="error-banner" class="error-msg"></div>
   <div id="orders-container" class="grid"></div>
 
-  <!-- Modal de Detalles -->
+  <!-- Modal -->
   <div id="modal-overlay" class="modal-overlay" onclick="closeModal(event)">
     <div class="modal-card" onclick="event.stopPropagation()">
       <div class="modal-header">
@@ -109,17 +137,14 @@
 
     async function fetchOrders() {
       const errorBanner = document.getElementById('error-banner');
-      
       try {
         const urlFinal = SHEET_CSV_URL + (SHEET_CSV_URL.includes('?') ? '&' : '?') + `t=${Date.now()}`;
         const response = await fetch(urlFinal);
-        
-        if (!response.ok) throw new Error("Error al conectar con Google Sheets.");
+        if (!response.ok) throw new Error("Error conectando con Google Sheets.");
         
         const csvText = await response.text();
         const parsed = parseCSV(csvText);
         
-        // Aplicar anulaciones de estado locales para respuesta instantánea
         rawOrders = parsed.map(order => {
           if (localStateOverrides[order.id]) {
             order.estado = localStateOverrides[order.id];
@@ -128,7 +153,7 @@
         });
 
         errorBanner.style.display = 'none';
-        renderOrders();
+        renderDashboard();
         document.getElementById('last-update').innerText = `Actualizado: ${new Date().toLocaleTimeString('es-CO')}`;
       } catch (error) {
         console.error(error);
@@ -167,25 +192,28 @@
     }
 
     function formatCOP(val) {
-      if (!val) return '$0 COP';
+      if (!val) return '$0';
       const cleanNum = parseInt(val.replace(/[^0-9]/g, ''), 10);
       if (isNaN(cleanNum)) return val;
       return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(cleanNum);
     }
 
-    function setFilter(filter) {
-      currentFilter = filter;
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      const activeBtn = document.getElementById(`btn-${filter}`);
-      if (activeBtn) activeBtn.classList.add('active');
-      renderOrders();
+    function clearDateFilter() {
+      document.getElementById('filter-date').value = '';
+      renderDashboard();
     }
 
-    // Actualiza el estado local de inmediato y envía la petición a Google Sheets
-    async function changeOrderStatus(event, orderId, nuevoEstado) {
-      event.stopPropagation(); // Evita abrir el modal al presionar el botón
+    function setFilter(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-container .filter-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`btn-${filter}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      renderDashboard();
+    }
 
-      // 1. Guardar localmente para cero latencia visual
+    async function changeOrderStatus(event, orderId, nuevoEstado) {
+      event.stopPropagation();
+
       localStateOverrides[orderId] = nuevoEstado;
       localStorage.setItem('localStateOverrides', JSON.stringify(localStateOverrides));
 
@@ -194,43 +222,69 @@
         return o;
       });
 
-      renderOrders();
+      renderDashboard();
 
-      // 2. Enviar a Google Sheets en segundo plano
       if (SCRIPT_API_URL) {
         try {
           await fetch(`${SCRIPT_API_URL}?id=${encodeURIComponent(orderId)}&estado=${encodeURIComponent(nuevoEstado)}`, { mode: 'no-cors' });
         } catch (err) {
-          console.error("Error enviando actualización a Google Sheets", err);
+          console.error("Error enviando estado a Google Sheets", err);
         }
       }
     }
 
-    function renderOrders() {
-      const container = document.getElementById('orders-container');
+    function renderDashboard() {
+      const selectedDate = document.getElementById('filter-date').value;
 
-      const filteredOrders = rawOrders.filter(order => {
+      // 1. Filtrar por Fecha para Métricas y Tarjetas
+      let dateFilteredOrders = rawOrders.filter(order => {
+        if (!selectedDate) return true;
+        return (order.fecha || '').includes(selectedDate);
+      });
+
+      // 2. Calcular Métricas en Tiempo Real
+      let vendidosCount = 0;
+      let pendientesCount = 0;
+      let totalDinero = 0;
+
+      dateFilteredOrders.forEach(o => {
+        const est = (o.estado || 'pendiente').toLowerCase();
+        if (est.includes('aprobado') || est.includes('despachado') || est.includes('confirmado') || est.includes('proceso')) {
+          vendidosCount++;
+          const val = parseInt((o.total || '0').replace(/[^0-9]/g, ''), 10);
+          if (!isNaN(val)) totalDinero += val;
+        } else if (est.includes('pendiente')) {
+          pendientesCount++;
+        }
+      });
+
+      document.getElementById('metric-total-vendidos').innerText = vendidosCount;
+      document.getElementById('metric-total-pendientes').innerText = pendientesCount;
+      document.getElementById('metric-monto-total').innerText = formatCOP(String(totalDinero));
+
+      // 3. Filtrar por Estado para la Cuadrícula
+      const finalOrders = dateFilteredOrders.filter(order => {
         const est = (order.estado || 'pendiente').toLowerCase();
         if (currentFilter === 'PENDIENTE') return est.includes('pendiente');
         if (currentFilter === 'APROBADO') return est.includes('aprobado') || est.includes('confirmado');
-        if (currentFilter === 'PROCESO') return est.includes('proceso') || est.includes('saliendo') || est.includes('despachado');
+        if (currentFilter === 'PROCESO') return est.includes('proceso') || est.includes('despachado');
         return true;
       });
 
-      if (filteredOrders.length === 0) {
-        container.innerHTML = `<div class="state-message">No hay encargo en estado "${currentFilter}" en este momento.</div>`;
+      const container = document.getElementById('orders-container');
+      if (finalOrders.length === 0) {
+        container.innerHTML = `<div class="state-message">No hay pedidos registrados con estos filtros.</div>`;
         return;
       }
 
       let newHTML = '';
-
-      filteredOrders.forEach((order) => {
+      finalOrders.forEach((order) => {
         const estadoClean = (order.estado || 'pendiente').toLowerCase();
         
         let badgeClass = 'badge-neutro';
         if (estadoClean.includes('pendiente')) badgeClass = 'badge-pendiente';
         else if (estadoClean.includes('aprobado') || estadoClean.includes('confirmado')) badgeClass = 'badge-aprobado';
-        else if (estadoClean.includes('proceso') || estadoClean.includes('saliendo') || estadoClean.includes('despachado')) badgeClass = 'badge-proceso';
+        else if (estadoClean.includes('proceso') || estadoClean.includes('despachado')) badgeClass = 'badge-proceso';
 
         newHTML += `
           <div class="card" onclick="openModal('${encodeURIComponent(JSON.stringify(order))}')">
@@ -240,13 +294,12 @@
             </div>
             <div class="order-details">
               ${order.pedido || 'Sin detalles de producto'}
+              ${order.direccion ? `<div class="address-text">📍 ${order.direccion}</div>` : ''}
             </div>
             <div class="card-footer">
               <span>ID: #${order.id || '0'} | ${order.fecha || ''}</span>
               <span class="price-tag">${formatCOP(order.total)}</span>
             </div>
-
-            <!-- Botones de Acción Directos -->
             <div class="action-buttons">
               <button class="act-btn act-btn-pendiente" onclick="changeOrderStatus(event, '${order.id}', 'PENDIENTE')">🔴 Pendiente</button>
               <button class="act-btn act-btn-aprobado" onclick="changeOrderStatus(event, '${order.id}', 'APROBADO')">🟢 Aceptar</button>
@@ -268,6 +321,7 @@
         <p><strong>Hora/Fecha:</strong> ${order.fecha || 'N/A'}</p>
         <p><strong>Cliente:</strong> 👤 ${order.cliente || 'Anónimo'}</p>
         <p><strong>Pedido:</strong> ${order.pedido || 'N/A'}</p>
+        <p><strong>Dirección:</strong> 📍 ${order.direccion || 'No especificada'}</p>
         <p><strong>Valor Total:</strong> <span style="color:#38bdf8; font-weight:bold;">${formatCOP(order.total)}</span></p>
         <p><strong>Estado Actual:</strong> <span style="text-transform:uppercase; font-weight:bold;">${order.estado || 'PENDIENTE'}</span></p>
       `;
