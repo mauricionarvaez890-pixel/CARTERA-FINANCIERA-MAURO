@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ficha de encargo - Dashboard 24/7</title>
+  <title>Ficha de Encargo - Dashboard 24/7</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
     body { background-color: #0b1329; color: #f8fafc; padding: 16px; }
@@ -13,29 +13,39 @@
     .status-bar { font-size: 0.8rem; color: #94a3b8; display: flex; align-items: center; gap: 6px; background: #1e293b; padding: 5px 10px; border-radius: 20px; }
     .dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #22c55e; }
 
-    /* Recuadro Compacto de Cierre / Contadores */
+    /* Panel Metrico */
     .metrics-panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 15px; background: #131f37; padding: 12px; border-radius: 10px; border: 1px solid #1e293b; }
     .metric-card { background: #0b1329; padding: 10px; border-radius: 8px; border: 1px solid #1e293b; text-align: center; }
     .metric-title { font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
     .metric-value { font-size: 1.3rem; font-weight: 800; color: #38bdf8; }
     .metric-value.green { color: #4ade80; }
 
-    /* Selector de Fecha para Cierre del Día */
+    /* Selector de Fecha */
     .date-picker-wrapper { display: flex; align-items: center; gap: 8px; justify-content: flex-end; margin-bottom: 12px; }
     .date-picker-wrapper label { font-size: 0.8rem; color: #94a3b8; font-weight: 600; }
     .date-picker-wrapper input { background: #131f37; border: 1px solid #334155; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 0.82rem; outline: none; }
 
-    /* Filtros de Estado */
+    /* Filtros por Estado */
     .filter-container { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; background-color: #131f37; padding: 10px 12px; border-radius: 10px; border: 1px solid #1e293b; }
     .filter-label { font-size: 0.82rem; font-weight: 600; color: #94a3b8; }
     .filter-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
     .filter-btn { background-color: #0b1329; color: #cbd5e1; border: 1px solid #334155; padding: 5px 12px; border-radius: 16px; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
     .filter-btn.active { background-color: #38bdf8; color: #0b1329; border-color: #38bdf8; font-weight: 800; }
 
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
     
-    /* Tarjetas */
-    .card { background-color: #131f37; border: 1px solid #1e293b; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; cursor: pointer; position: relative; }
+    /* Tarjeta de Pedido */
+    .card { background-color: #131f37; border: 1px solid #1e293b; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; cursor: pointer; position: relative; transition: all 0.2s ease; }
+    .card:hover { border-color: #38bdf880; }
+    
+    /* Alerta de Retraso (>15 min) */
+    .card.delayed { border: 2px solid #ef4444; animation: pulseRed 2s infinite; }
+    @keyframes pulseRed {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
     .card-header { display: flex; justify-content: space-between; align-items: center; }
     .client-name { font-weight: 700; font-size: 1rem; color: #ffffff; }
     
@@ -45,17 +55,27 @@
     .badge-proceso { background-color: #f59e0b20; color: #fbbf24; border: 1px solid #f59e0b; }
     .badge-neutro { background-color: #64748b20; color: #cbd5e1; border: 1px solid #64748b; }
     
+    /* Etiqueta Licor */
+    .licor-tag { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 800; margin-top: 5px; }
+    .licor-con { background-color: #a855f720; color: #c084fc; border: 1px solid #a855f7; }
+    .licor-sin { background-color: #06b6d420; color: #22d3ee; border: 1px solid #06b6d4; }
+
     .order-details { font-size: 0.88rem; color: #cbd5e1; background-color: #0b1329a0; padding: 10px; border-radius: 6px; border: 1px solid #1e293b; }
-    .address-text { font-size: 0.78rem; color: #38bdf8; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+    .qty-tag { font-weight: 800; color: #4ade80; font-size: 1rem; }
+    .sub-detail { font-size: 0.78rem; color: #94a3b8; margin-top: 6px; display: flex; flex-direction: column; gap: 3px; }
+    .address-text { color: #38bdf8; }
+    .delay-warning { color: #f87171; font-weight: 800; font-size: 0.75rem; display: flex; align-items: center; gap: 4px; }
+    
     .card-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: #64748b; }
     .price-tag { font-size: 0.95rem; font-weight: 700; color: #38bdf8; }
 
-    /* Botones de Cambio Rápido de Estado */
+    /* Botones de Acción */
     .action-buttons { display: flex; gap: 6px; border-top: 1px solid #1e293b; padding-top: 8px; }
-    .act-btn { flex: 1; padding: 5px; border-radius: 5px; font-size: 0.72rem; font-weight: 700; border: none; cursor: pointer; color: #fff; }
+    .act-btn { flex: 1; padding: 6px 4px; border-radius: 5px; font-size: 0.72rem; font-weight: 700; border: none; cursor: pointer; color: #fff; }
     .act-btn-pendiente { background-color: #ef4444; }
     .act-btn-aprobado { background-color: #22c55e; }
     .act-btn-despachado { background-color: #f59e0b; }
+    .act-btn-ws { background-color: #25D366; color: #000; font-weight: 800; }
 
     .state-message { text-align: center; padding: 40px; color: #64748b; font-size: 1rem; grid-column: 1 / -1; }
     .error-msg { color: #f87171; background-color: #450a0a; padding: 10px; border-radius: 6px; margin-bottom: 15px; display: none; border: 1px solid #ef4444; font-size: 0.85rem; }
@@ -79,25 +99,25 @@
     </div>
   </header>
 
-  <!-- Filtro de Fecha (Cierre del día) -->
+  <!-- Filtro por Fecha -->
   <div class="date-picker-wrapper">
     <label for="filter-date">📅 Cierre por Fecha:</label>
     <input type="date" id="filter-date" onchange="renderDashboard()">
     <button class="filter-btn" onclick="clearDateFilter()">Ver Todos</button>
   </div>
 
-  <!-- Panel Compacto de Resumen -->
+  <!-- Panel Metrico -->
   <div class="metrics-panel">
     <div class="metric-card">
-      <div class="metric-title">Pedidos Vendidos</div>
+      <div class="metric-title">Productos Vendidos</div>
       <div class="metric-value green" id="metric-total-vendidos">0</div>
     </div>
     <div class="metric-card">
-      <div class="metric-title">Pendientes</div>
+      <div class="metric-title">Pedidos Pendientes</div>
       <div class="metric-value" id="metric-total-pendientes">0</div>
     </div>
     <div class="metric-card">
-      <div class="metric-title">Recaudado Hoy</div>
+      <div class="metric-title">Recaudado Día</div>
       <div class="metric-value" id="metric-monto-total">$0</div>
     </div>
   </div>
@@ -116,7 +136,7 @@
   <div id="error-banner" class="error-msg"></div>
   <div id="orders-container" class="grid"></div>
 
-  <!-- Modal -->
+  <!-- Modal Detalle -->
   <div id="modal-overlay" class="modal-overlay" onclick="closeModal(event)">
     <div class="modal-card" onclick="event.stopPropagation()">
       <div class="modal-header">
@@ -132,8 +152,28 @@
     const SCRIPT_API_URL = 'https://script.google.com/macros/s/AKfycbxnHNw_VApwTPRFwAfhm-jUtD8wxWiVWVNhOpLaQqlTimlDoZsM3WDY6P0a1XCqcaoD/exec';
 
     let rawOrders = [];
+    let knownOrderIds = new Set();
+    let isFirstLoad = true;
     let localStateOverrides = JSON.parse(localStorage.getItem('localStateOverrides') || '{}');
     let currentFilter = 'TODOS';
+
+    // Generador de Sonido "Ding!" sintético (Sin enlaces externos)
+    function playNotificationSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1); // A5
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.6);
+      } catch (e) { console.log("Audio no permitido aún por el navegador."); }
+    }
 
     async function fetchOrders() {
       const errorBanner = document.getElementById('error-banner');
@@ -145,12 +185,26 @@
         const csvText = await response.text();
         const parsed = parseCSV(csvText);
         
+        let hasNewOrders = false;
+
         rawOrders = parsed.map(order => {
           if (localStateOverrides[order.id]) {
             order.estado = localStateOverrides[order.id];
           }
+          
+          // Detectar pedidos nuevos para sonar la campana
+          if (!isFirstLoad && order.id && !knownOrderIds.has(order.id)) {
+            hasNewOrders = true;
+          }
+          if (order.id) knownOrderIds.add(order.id);
+
           return order;
         });
+
+        if (hasNewOrders) {
+          playNotificationSound();
+        }
+        isFirstLoad = false;
 
         errorBanner.style.display = 'none';
         renderDashboard();
@@ -193,9 +247,42 @@
 
     function formatCOP(val) {
       if (!val) return '$0';
-      const cleanNum = parseInt(val.replace(/[^0-9]/g, ''), 10);
+      const cleanNum = parseInt(String(val).replace(/[^0-9]/g, ''), 10);
       if (isNaN(cleanNum)) return val;
       return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(cleanNum);
+    }
+
+    // Calcular si el pedido lleva retraso (>15 minutos en estado PENDIENTE)
+    function checkDelayMinutes(fechaStr, estado) {
+      if (!fechaStr || !(estado || '').toLowerCase().includes('pendiente')) return { isDelayed: false, minutes: 0 };
+      
+      try {
+        // Formato esperado: DD/MM/YYYY hh:mm AM/PM o YYYY-MM-DD
+        const parts = fechaStr.split(' ');
+        if (parts.length < 2) return { isDelayed: false, minutes: 0 };
+
+        const dateParts = parts[0].split(/[\/\-]/);
+        const timeParts = parts[1].split(':');
+        let hours = parseInt(timeParts[0], 10);
+        const minutes = parseInt(timeParts[1], 10);
+        
+        if (parts[2] && parts[2].toLowerCase() === 'pm' && hours < 12) hours += 12;
+        if (parts[2] && parts[2].toLowerCase() === 'am' && hours === 12) hours = 0;
+
+        let orderDate;
+        if (dateParts[0].length === 4) {
+          orderDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2], hours, minutes);
+        } else {
+          orderDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0], hours, minutes);
+        }
+
+        const diffMs = new Date() - orderDate;
+        const diffMins = Math.floor(diffMs / 60000);
+
+        return { isDelayed: diffMins >= 15, minutes: diffMins };
+      } catch (e) {
+        return { isDelayed: false, minutes: 0 };
+      }
     }
 
     function clearDateFilter() {
@@ -233,16 +320,36 @@
       }
     }
 
+    function sendWhatsApp(event, order) {
+      event.stopPropagation();
+      const phone = (order.telefono || '').replace(/[^0-9]/g, '');
+      const msg = encodeURIComponent(`¡Hola ${order.cliente || ''}! 👋 Tu pedido de ${order.cantidad || 1}x ${order.pedido || 'Granizado'} se encuentra en estado: *${order.estado || 'PENDIENTE'}*. ¡Muchas gracias!`);
+      
+      if (phone) {
+        window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${msg}`, '_blank');
+      } else {
+        window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+      }
+    }
+
     function renderDashboard() {
       const selectedDate = document.getElementById('filter-date').value;
 
-      // 1. Filtrar por Fecha para Métricas y Tarjetas
+      // 1. Filtrar por Fecha
       let dateFilteredOrders = rawOrders.filter(order => {
         if (!selectedDate) return true;
-        return (order.fecha || '').includes(selectedDate);
+        const [year, month, day] = selectedDate.split('-');
+        const possibleFormats = [
+          selectedDate,
+          `${day}/${month}/${year}`,
+          `${parseInt(day)}/${parseInt(month)}/${year}`,
+          `${day}-${month}-${year}`
+        ];
+        const orderDate = (order.fecha || '').toLowerCase();
+        return possibleFormats.some(format => orderDate.includes(format));
       });
 
-      // 2. Calcular Métricas en Tiempo Real
+      // 2. Métricas
       let vendidosCount = 0;
       let pendientesCount = 0;
       let totalDinero = 0;
@@ -250,7 +357,9 @@
       dateFilteredOrders.forEach(o => {
         const est = (o.estado || 'pendiente').toLowerCase();
         if (est.includes('aprobado') || est.includes('despachado') || est.includes('confirmado') || est.includes('proceso')) {
-          vendidosCount++;
+          const cant = parseInt(o.cantidad || '1', 10);
+          vendidosCount += isNaN(cant) ? 1 : cant;
+          
           const val = parseInt((o.total || '0').replace(/[^0-9]/g, ''), 10);
           if (!isNaN(val)) totalDinero += val;
         } else if (est.includes('pendiente')) {
@@ -262,7 +371,7 @@
       document.getElementById('metric-total-pendientes').innerText = pendientesCount;
       document.getElementById('metric-monto-total').innerText = formatCOP(String(totalDinero));
 
-      // 3. Filtrar por Estado para la Cuadrícula
+      // 3. Filtro de Estado
       const finalOrders = dateFilteredOrders.filter(order => {
         const est = (order.estado || 'pendiente').toLowerCase();
         if (currentFilter === 'PENDIENTE') return est.includes('pendiente');
@@ -286,24 +395,50 @@
         else if (estadoClean.includes('aprobado') || estadoClean.includes('confirmado')) badgeClass = 'badge-aprobado';
         else if (estadoClean.includes('proceso') || estadoClean.includes('despachado')) badgeClass = 'badge-proceso';
 
+        // Manejo "Con Licor" / "Sin Licor"
+        const licorRaw = (order.licor || '').toLowerCase();
+        let licorHTML = '';
+        if (licorRaw.includes('con')) {
+          licorHTML = `<span class="licor-tag licor-con">🍸 CON LICOR</span>`;
+        } else if (licorRaw.includes('sin')) {
+          licorHTML = `<span class="licor-tag licor-sin">🥤 SIN LICOR</span>`;
+        } else if (order.licor) {
+          licorHTML = `<span class="licor-tag licor-sin">🍹 ${order.licor}</span>`;
+        }
+
+        // Chequeo de Retraso
+        const delayInfo = checkDelayMinutes(order.fecha, order.estado);
+        const cardDelayedClass = delayInfo.isDelayed ? 'delayed' : '';
+        const delayWarningHTML = delayInfo.isDelayed 
+          ? `<div class="delay-warning">⏱️ ¡DEMORADO! (+${delayInfo.minutes} min)</div>` 
+          : '';
+
+        const cantidadStr = order.cantidad ? `<span class="qty-tag">${order.cantidad}x</span>` : '';
+        const dirStr = order.direccion ? `<span class="address-text">📍 ${order.direccion}</span>` : '';
+
         newHTML += `
-          <div class="card" onclick="openModal('${encodeURIComponent(JSON.stringify(order))}')">
+          <div class="card ${cardDelayedClass}" onclick="openModal('${encodeURIComponent(JSON.stringify(order))}')">
             <div class="card-header">
               <span class="client-name">👤 ${order.cliente || 'Cliente Anónimo'}</span>
               <span class="badge ${badgeClass}">${order.estado || 'PENDIENTE'}</span>
             </div>
             <div class="order-details">
-              ${order.pedido || 'Sin detalles de producto'}
-              ${order.direccion ? `<div class="address-text">📍 ${order.direccion}</div>` : ''}
+              ${cantidadStr} ${order.pedido || 'Sin detalles'}
+              <div>${licorHTML}</div>
+              <div class="sub-detail">
+                ${dirStr}
+                ${delayWarningHTML}
+              </div>
             </div>
             <div class="card-footer">
               <span>ID: #${order.id || '0'} | ${order.fecha || ''}</span>
               <span class="price-tag">${formatCOP(order.total)}</span>
             </div>
             <div class="action-buttons">
-              <button class="act-btn act-btn-pendiente" onclick="changeOrderStatus(event, '${order.id}', 'PENDIENTE')">🔴 Pendiente</button>
+              <button class="act-btn act-btn-pendiente" onclick="changeOrderStatus(event, '${order.id}', 'PENDIENTE')">🔴</button>
               <button class="act-btn act-btn-aprobado" onclick="changeOrderStatus(event, '${order.id}', 'APROBADO')">🟢 Aceptar</button>
               <button class="act-btn act-btn-despachado" onclick="changeOrderStatus(event, '${order.id}', 'DESPACHADO')">🟠 Despachar</button>
+              <button class="act-btn act-btn-ws" onclick="sendWhatsApp(event, ${JSON.stringify(order).replace(/"/g, '&quot;')})">💬 WA</button>
             </div>
           </div>
         `;
@@ -320,8 +455,11 @@
         <p><strong>N° de ID:</strong> #${order.id || 'N/A'}</p>
         <p><strong>Hora/Fecha:</strong> ${order.fecha || 'N/A'}</p>
         <p><strong>Cliente:</strong> 👤 ${order.cliente || 'Anónimo'}</p>
+        <p><strong>Cantidad:</strong> ${order.cantidad || '1'}</p>
         <p><strong>Pedido:</strong> ${order.pedido || 'N/A'}</p>
+        <p><strong>Licor:</strong> ${order.licor || 'N/A'}</p>
         <p><strong>Dirección:</strong> 📍 ${order.direccion || 'No especificada'}</p>
+        <p><strong>Teléfono:</strong> 📞 ${order.telefono || 'No registrado'}</p>
         <p><strong>Valor Total:</strong> <span style="color:#38bdf8; font-weight:bold;">${formatCOP(order.total)}</span></p>
         <p><strong>Estado Actual:</strong> <span style="text-transform:uppercase; font-weight:bold;">${order.estado || 'PENDIENTE'}</span></p>
       `;
